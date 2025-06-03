@@ -5,42 +5,50 @@
       "apelido": "Silva",
       "curso": 1,
       "anoCurricular": 2,
-      "idade": 21
+      "idade": 21,
+      "id": "1ec6"
     },
     {
       "nome": "Maria",
       "apelido": "Silva",
       "anoCurricular": 2,
       "curso": 2,
-      "idade": 22
+      "idade": 22,
+      "id": "1352"
     },
     {
       "nome": "Manuel",
       "apelido": "Santos",
       "anoCurricular": 3,
       "curso": 1,
-      "idade": 23
+      "idade": 23,
+      "id": "5207"
     },
     {
       "nome": "Gonçalo",
       "apelido": "Correia",
       "anoCurricular": 2,
       "curso": "2",
-      "idade": 21
+      "idade": 21,
+      "id": "64d3"
     }
   ],
   "cursos": [
     {
-      "id": 1,
-      "nomeDoCurso": "Engenharia da Computação Gráfica e Multimédia"
+      "id": "1",
+      "nomeDoCurso": "Engenharia da Computação Gráfica e multimédia"
     },
     {
-      "id": 2,
+      "id": "2",
       "nomeDoCurso": "Engenharia de Redes e Sistemas de Computadores"
     },
     {
-      "id": 3,
+      "id": "3",
       "nomeDoCurso": "Engenharia Informática"
+    },
+    {
+      "id": "4",
+      "nomeDoCurso": "Engenharia Mecatrónica"
     }
   ]
 }
