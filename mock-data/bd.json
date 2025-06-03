@@ -1,4 +1,3 @@
-
 {
   "alunos": [
     {
@@ -6,11 +5,42 @@
       "apelido": "Silva",
       "curso": 1,
       "anoCurricular": 2,
-      "idade" : 21
+      "idade": 21
+    },
+    {
+      "nome": "Maria",
+      "apelido": "Silva",
+      "anoCurricular": 2,
+      "curso": 2,
+      "idade": 22
+    },
+    {
+      "nome": "Manuel",
+      "apelido": "Santos",
+      "anoCurricular": 3,
+      "curso": 1,
+      "idade": 23
+    },
+    {
+      "nome": "Gonçalo",
+      "apelido": "Correia",
+      "anoCurricular": 2,
+      "curso": "2",
+      "idade": 21
     }
   ],
   "cursos": [
-    { "id" : 1, "nomeDoCurso": "Engenharia da Computação Gráfica e Multimédia" },
-    { "id" : 2, "nomeDoCurso": "Engenharia de Redes e Sistemas de Computadores" }
+    {
+      "id": 1,
+      "nomeDoCurso": "Engenharia da Computação Gráfica e Multimédia"
+    },
+    {
+      "id": 2,
+      "nomeDoCurso": "Engenharia de Redes e Sistemas de Computadores"
+    },
+    {
+      "id": 3,
+      "nomeDoCurso": "Engenharia Informática"
+    }
   ]
 }
