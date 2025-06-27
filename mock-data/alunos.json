@@ -1,0 +1,36 @@
+{
+    "alunos": [
+    {
+      "nome": "Maria",
+      "apelido": "Silva",
+      "idade": "22",
+      "anoCurricular": "2",
+      "curso": "2",
+      "id": "1352"
+    },
+    {
+      "nome": "Manuel",
+      "apelido": "Santos",
+      "idade": "23",
+      "anoCurricular": "3",
+      "curso": "1",
+      "id": "5207"
+    },
+    {
+      "nome": "Ana",
+      "apelido": "Costa",
+      "idade": "20",
+      "anoCurricular": "1",
+      "curso": "3",
+      "id": "1234"
+    },
+    {
+      "nome": "Gonçalo",
+      "apelido": "Correia",
+      "idade": "21",
+      "anoCurricular": "2",
+      "curso": "2",
+      "id": "7738"
+    }
+  ]
+}
