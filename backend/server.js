@@ -17,4 +17,4 @@ app.use('/alunos', alunoRoute);
 app.use('/cursos', cursoRoute);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor na porta ${PORT}`));

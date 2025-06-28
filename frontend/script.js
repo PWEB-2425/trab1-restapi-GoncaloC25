@@ -30,7 +30,7 @@ async function listarAlunos(){
 
     const cursosJS = await cursosresposta.json();
     const cursosArray = cursosJS[0]?.cursos ?? [];
-    console.log(cursosJS);
+    console.log(alunosArray);
 
     table.innerHTML = "";
 
