@@ -26,15 +26,11 @@ async function listarAlunos(){
     const cursosresposta = await fetch(cursosurl);
 
     const alunosJS = await alunosresposta.json();
-<<<<<<< HEAD
     const alunosArray = alunosJS[0]?.alunos ?? [];
 
     const cursosJS = await cursosresposta.json();
     const cursosArray = cursosJS[0]?.cursos ?? [];
     console.log(cursosJS);
-=======
-    const cursosJS = await cursosresposta.json();
->>>>>>> parent of 712bbff (correção bug implementação backend e frontend)
 
     table.innerHTML = "";
 
@@ -226,10 +222,7 @@ async function editarAluno(evento) {
 async function makeInptus(row){
     const cursosresposta = await fetch(cursosurl);
     const cursosJS = await cursosresposta.json();
-<<<<<<< HEAD
     const cursosArray = cursosJS[0]?.cursos ?? [];
-=======
->>>>>>> parent of 712bbff (correção bug implementação backend e frontend)
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");
@@ -301,17 +294,11 @@ function mostraCursos() {
 async function listarCurso(){
     const cursosresposta = await fetch(cursosurl);
     const cursosJS = await cursosresposta.json();
-<<<<<<< HEAD
     const cursosArray = cursosJS[0]?.cursos ?? [];
 
     const alunosresposta = await fetch(alunosurl);
     const alunosJS = await alunosresposta.json();
     const alunosArray = alunosJS[0]?.alunos ?? [];
-=======
-
-    const alunosresposta = await fetch(alunosurl);
-    const alunosJS = await alunosresposta.json();
->>>>>>> parent of 712bbff (correção bug implementação backend e frontend)
 
     table.innerHTML = "";
     table.innerHTML = "<thead><tr><th>Nome do Curso</th><th>Alunos Inscritos</th><th>Ações</th></tr></thead>";
@@ -451,13 +438,7 @@ async function editarCurso(evento) {
     });
 }
 
-<<<<<<< HEAD
 function makeCursoInputs(row){
-=======
-async function makeCursoInputs(row){
-    const cursosresposta = await fetch(cursosurl);
-    const cursosJS = await cursosresposta.json();
->>>>>>> parent of 712bbff (correção bug implementação backend e frontend)
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");
