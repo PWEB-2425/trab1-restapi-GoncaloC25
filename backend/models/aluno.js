@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 
 const AlunoScheme = new mongoose.Schema({
-  nome: String,
-  apelido: String,
-  idade: Number,
-  anoCurricular: Number,
-  curso: Number
+  alunos: [{
+    nome: String,
+    apelido: String,
+    idade: String,
+    anoCurricular: String,
+    curso: String,
+    id: String
+  }]
 });
 
 module.exports = mongoose.model('Aluno', AlunoScheme);
