@@ -26,7 +26,10 @@ async function listarAlunos(){
     const cursosresposta = await fetch(cursosurl);
 
     const alunosJS = await alunosresposta.json();
+    //const alunosArray = alunosJS[0]?.alunos ?? [];
+
     const cursosJS = await cursosresposta.json();
+    //const cursosArray = cursosJS[0]?.cursos ?? [];
 
     table.innerHTML = "";
 
@@ -210,6 +213,7 @@ async function editarAluno(evento) {
 async function makeInptus(row){
     const cursosresposta = await fetch(cursosurl);
     const cursosJS = await cursosresposta.json();
+    //const cursosArray = cursosJS[0]?.cursos ?? [];
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");
@@ -281,9 +285,11 @@ function mostraCursos() {
 async function listarCurso(){
     const cursosresposta = await fetch(cursosurl);
     const cursosJS = await cursosresposta.json();
+    //const cursosArray = cursosJS[0]?.cursos ?? [];
 
     const alunosresposta = await fetch(alunosurl);
     const alunosJS = await alunosresposta.json();
+    //const alunosArray = alunosJS[0]?.alunos ?? [];
 
     table.innerHTML = "";
     table.innerHTML = "<thead><tr><th>Nome do Curso</th><th>Alunos Inscritos</th><th>Ações</th></tr></thead>";
@@ -425,7 +431,6 @@ async function editarCurso(evento) {
 
 async function makeCursoInputs(row){
     const cursosresposta = await fetch(cursosurl);
-    const cursosJS = await cursosresposta.json();
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");
