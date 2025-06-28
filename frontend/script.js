@@ -4,8 +4,8 @@ const btncriar = document.getElementById("adicionar-btn");
 btnaluno.addEventListener("click", mostraAlunos);
 btncurso.addEventListener("click", mostraCursos);
 
-const alunosurl = "http://localhost:3000/alunos/";
-const cursosurl = "http://localhost:3000/cursos/";
+const alunosurl = "https://trab1-pw.onrender.com/alunos/";
+const cursosurl = "https://trab1-pw.onrender.com/cursos/";
 
 const table = document.getElementById("tabela");
 let alunos = 0;
@@ -26,7 +26,11 @@ async function listarAlunos(){
     const cursosresposta = await fetch(cursosurl);
 
     const alunosJS = await alunosresposta.json();
+    const alunosArray = alunosJS[0]?.alunos ?? [];
+
     const cursosJS = await cursosresposta.json();
+    const cursosArray = cursosJS[0]?.cursos ?? [];
+    console.log(cursosJS);
 
     table.innerHTML = "";
 
@@ -34,7 +38,7 @@ async function listarAlunos(){
 
     const tbody = document.createElement("tbody");
 
-    for (aluno of alunosJS) {
+    for (aluno of alunosArray) {
 
         const trow = document.createElement("tr");
         let namedata = document.createElement("td");
@@ -46,7 +50,7 @@ async function listarAlunos(){
         let editBtn = document.createElement("button");
 
         namedata.innerHTML = aluno.nome + " " + aluno.apelido;
-        coursedata.innerHTML = cursosJS.find(curso => curso.id == aluno.curso)?.nomeDoCurso || "Curso Desconhecido"; 
+        coursedata.innerHTML = cursosArray.find(curso => curso.id == aluno.curso)?.nomeDoCurso || "Curso Desconhecido"; 
         idadedata.innerHTML = aluno.idade + " anos";
         anodata.innerHTML = aluno.anoCurricular + "º ano";
 
@@ -195,6 +199,14 @@ async function editarAluno(evento) {
             alert("Existem Campos Vazios, impossivel adicionar.");
             table.removeChild(table.lastChild);
             listarAlunos();
+    nomeInput.setAttribute("type", "text");
+    nomeInput.setAttribute("id", "aluno_nome");
+    nomeInput.setAttribute("placeholder", "Nome");
+    nomeInput.setAttribute("class", "text input");
+    let apelidoInput = document.createElement("input");
+    apelidoInput.setAttribute("type", "text");
+    apelidoInput.setAttribute("id", "aluno_apeli");
+    apelidoInput.setAttribute("placeholder", "Apelido");
             return;
         }
 
@@ -210,6 +222,7 @@ async function editarAluno(evento) {
 async function makeInptus(row){
     const cursosresposta = await fetch(cursosurl);
     const cursosJS = await cursosresposta.json();
+    const cursosArray = cursosJS[0]?.cursos ?? [];
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");
@@ -247,7 +260,7 @@ async function makeInptus(row){
     cursoSelect.setAttribute("class", "select input");
     cursodata.appendChild(cursoSelect);
 
-    for (let curso of cursosJS) {
+    for (let curso of cursosArray) {
         const option = document.createElement("option");
         option.value = curso.id; 
         option.textContent = curso.nomeDoCurso;
@@ -281,16 +294,18 @@ function mostraCursos() {
 async function listarCurso(){
     const cursosresposta = await fetch(cursosurl);
     const cursosJS = await cursosresposta.json();
+    const cursosArray = cursosJS[0]?.cursos ?? [];
 
     const alunosresposta = await fetch(alunosurl);
     const alunosJS = await alunosresposta.json();
+    const alunosArray = alunosJS[0]?.alunos ?? [];
 
     table.innerHTML = "";
     table.innerHTML = "<thead><tr><th>Nome do Curso</th><th>Alunos Inscritos</th><th>Ações</th></tr></thead>";
 
     const tbody = document.createElement("tbody");
 
-    for (curso of cursosJS) {
+    for (curso of cursosArray) {
         const trow = document.createElement("tr");
         let namedata = document.createElement("td");
         let alunosData = document.createElement("td");
@@ -300,7 +315,7 @@ async function listarCurso(){
 
         namedata.innerHTML = curso.nomeDoCurso;
 
-        let alunosCount = alunosJS.filter(a => a.curso === curso.id).length;
+        let alunosCount = alunosArray.filter(a => a.curso === curso.id).length;
         alunosData.innerHTML = alunosCount > 0 ? alunosCount + " Aluno(s)" : "Nenhum Aluno Inscrito";
 
         delBtn.setAttribute("data-cursoid", curso.id);
@@ -423,9 +438,7 @@ async function editarCurso(evento) {
     });
 }
 
-async function makeCursoInputs(row){
-    const cursosresposta = await fetch(cursosurl);
-    const cursosJS = await cursosresposta.json();
+function makeCursoInputs(row){
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");
