@@ -1,1 +1,230 @@
-/* Estilos para a página */
+/*
+Color pallete:
+- Background: #252424
+- Primary: #f0f2f2 
+- Secondary 1: #c4aea0
+- Secondary 2: #c64e41
+*/
+
+body {
+  background-color: #252424;
+  color: #f0f2f2;
+  font-family: Coolvetica, sans-serif;
+  animation: fadeIn 2s ease 0s 1 normal forwards;
+}
+
+.mainmenu {
+    font-size: x-large;
+    text-align: center;
+}
+
+
+.divider {
+  margin: 20px;
+  padding: 10px;
+}
+
+.btn-divider {
+    width: 99%;
+    display: flex;
+}
+
+.btn-divider .btn {
+    flex: 1; /* Each button takes equal space */
+    margin: 0 3px; /* Optional: adds small spacing between buttons */
+    padding: 10px; /* Optional: adds padding inside buttons */
+}
+
+.sub {
+    border: #c64e41 solid 3px;
+    border-radius: 12px;
+    animation: myAnim 1s ease 0s 1 normal forwards;
+    
+    -webkit-box-shadow:0px 0px 57px 0px rgba(198,79,65,0.8);
+    -moz-box-shadow: 0px 0px 57px 0px rgba(198,79,65,0.8);
+    box-shadow: 0px 0px 57px 0px rgba(198,79,65,0.8);
+}
+
+.btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: Coolvetica, sans-serif;
+  background-color: #c4aea0;
+  margin: 3px;
+}
+
+.btn-primary {
+  font-family: Coolvetica, sans-serif;
+  background-color: #c4aea0;
+  color: #252424;
+  font-size: medium;
+}
+
+.btn:hover {
+  font-family: Coolvetica, sans-serif;
+  background-color: #95867b;
+}
+
+.btn-danger {
+  background-color: #d33c2f;
+  color: #f0f2f2;
+}
+
+.btn-danger:hover {
+  background-color: #b32a1f;
+  animation: wiggle 0.3s infinite;
+  animation-direction: alternate;
+  transform-origin: 50% 10%;
+}
+
+/* Modern table styling with your color palette */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Coolvetica', sans-serif;
+  margin: 20px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: #252424; /* Background color */
+  color: #f0f2f2; /* Primary text color */
+}
+
+.table thead {
+  background-color: #c64e41; /* Secondary 2 for header */
+  color: #f0f2f2; /* Primary for header text */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 500;
+  position: relative;
+}
+
+.table th:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background-color: rgba(240, 242, 242, 0.3); /* Primary with opacity */
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #2e2d2d; /* Slightly lighter than background */
+}
+
+.table tbody tr:hover {
+  background-color: #383737; /* Hover state */
+}
+
+.table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #383737; /* Darker border */
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Accent colors for interactive elements */
+.table a {
+  color: #c4aea0; /* Secondary 1 for links */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.table a:hover {
+  color: #c64e41; /* Secondary 2 on hover */
+}
+
+/* Status indicators - example customization */
+.table .status-active {
+  color: #c4aea0; /* Secondary 1 */
+}
+
+.table .status-inactive {
+  color: #c64e41; /* Secondary 2 */
+}
+
+/* Rounded corners */
+.table th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.table th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.table tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.table tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+.input {
+  padding: 10px;
+  margin-right: 10px;
+  border: 2px solid #c4aea0; /* Secondary 1 */
+  border-radius: 5px;
+  background-color: #383737; /* Slightly lighter than background */
+  color: #f0f2f2; /* Primary text color */
+  font-family: Coolvetica, sans-serif;
+}
+
+.num:hover, .text:hover {
+  background-color: #c4aea0;
+  color: #252424;
+}
+
+@font-face {
+  font-family: Coolvetica;
+  src: url("fonts/Coolvetica.otf") format("opentype");
+}
+
+ @keyframes wiggle {
+      0% {
+        transform: rotate(-1deg);
+        animation-timing-function: ease-in;
+      }
+
+      50% {
+        transform: rotate(1.5deg);
+        animation-timing-function: ease-out;
+      }
+} 
+
+@keyframes myAnim {
+    0% {
+      opacity: 0;
+      transform: translateY(-250px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
