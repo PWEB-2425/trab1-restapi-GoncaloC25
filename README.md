@@ -1,3 +1,4 @@
+# Informações gerais do programa
 ## O que consiste o programa
 
 Este é um programa CRUD (Create, Read, Update, Delete) de alunos. Ele permite gerir alunos inscritos em diversos cursos. Permite ainda a gestão dos cursos.
@@ -25,3 +26,7 @@ Para utilizarmos a aplicação com o deploy no render, apenas teremos de escolhe
 Neste programa, são conhecidos os problemas:
   - Impossivel adicionar alunos ou cursos quando utilizado outro modelo de base de dados sem ser o JSON-Server.
   - Criada uma entrada vazia fora do array de alunos ou cursos quando é tentado adicionar um novo aluno ou curso.
+
+# Informações do Aluno que realizou este trabalho
+
+Gonçalo Duque Correia, nº 29435
