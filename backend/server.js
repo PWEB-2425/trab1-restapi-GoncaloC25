@@ -1,20 +1,285 @@
-// API real a ser implementada
-
+// Importa módulos necessários
 const express = require('express');
+const { MongoClient, ObjectId } = require('mongodb');
+const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config');
-const alunoRoute = require('./routes/alunoRoutes');
-const cursoRoute = require('./routes/cursoRoutes');
-require('dotenv').config();
+dotenv.config();
 
+// Cria uma instância do Express
 const app = express();
-connectDB();
 
-app.use(cors());
+// Permite receber dados de formulários via POST
+app.use(express.urlencoded({ extended: true }));
+// Permite receber dados em JSON
 app.use(express.json());
+app.use(cors());
 
-app.use('/alunos', alunoRoute); 
-app.use('/cursos', cursoRoute);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+// Rota pública de exemplo
+app.get('/about', (req, res) => {
+    res.send('Sobre nós');
+});
+
+// proteger a pagina estatica '/pesquisa.html'
+// tem que ser feito antes de configurar o servidor estatico
+
+// Função para criar entradas na base de dados
+
+app.use('/criar/:isWhat', async (req, res) => {
+    try{
+        const isWhat = req.params.isWhat;
+        var doc = {};
+        var collection;
+
+        if (isWhat === "aluno"){
+            collection = db.collection('Alunos');
+            doc = {
+                nome: req.body.nome,
+                apelido: req.body.apelido,
+                idade: req.body.idade,
+                anoCurricular: req.body.anoCurricular,
+                curso: req.body.curso
+            }
+        } else if(isWhat === "curso"){
+            collection = db.collection('Cursos');
+            doc = {
+                nomeDoCurso: req.body.nomeDoCurso
+            }
+        } else {
+            throw error("Parametro desconhecido")
+        }
+        
+        const resultado = await collection.insertOne(doc);
+        console.log(`A document was inserted with the _id: ${resultado.insertedId}`);
+
+        res.status(201).json({
+            message: isWhat + ' criado com sucesso',
+            id: resultado.insertedId
+        });
+
+    } catch (error) {
+        console.log('Impossivel criar, erro inesperado no servidor: ' + error);
+
+        res.status(500).json({ error: 'Erro inesperado no servidor' });
+    }
+});
+
+// Função para listar entradas na base de dados
+
+app.use('/listar/:isWhat', async (req, res) => {
+    try{
+        const isWhat = req.params.isWhat;
+        var collection;
+        
+        if(isWhat === "aluno"){
+            collection = db.collection('Alunos');
+        } else if (isWhat === "curso"){
+            collection = db.collection('Cursos');
+        } else {
+            throw error("Parametro desconhecido");
+        }
+
+        const resultado = await collection.find();
+        res.send(await resultado.toArray());
+
+    } catch (error) {
+        console.log('Impossivel encontrar, erro inesperado no servidor: ' + error);
+        res.status(500).json({
+            message: 'Internal Server Error',
+        });
+    }
+});
+
+// Funçoes de middleware para Atualizar entradas na base de dados
+
+app.use('/update/:isWhat', async (req, res) => {
+    try{
+        const isWhat = req.params.isWhat;
+        var collection;
+        var updateDocument = {};
+        
+        if(isWhat === "aluno"){
+            collection = db.collection('Alunos');
+            updateDocument = {
+                $set: {
+                    nome: req.body.nome,
+                    apelido: req.body.apelido,
+                    idade: req.body.idade,
+                    anoCurricular: req.body.anoCurricular,
+                    curso: req.body.curso
+                }
+            };
+        } else if (isWhat === "curso"){
+            collection = db.collection('Cursos');
+            updateDocument = {
+                $set: {
+                    nomeDoCurso: req.body.nomeDoCurso,
+                }
+            }
+        } else {
+            throw error("Parametro desconhecido");
+        }
+
+        const o_id = new ObjectId(req.body.id);
+
+        const filter = {_id: o_id };
+
+        const resultado = await collection.updateOne(filter, updateDocument);
+
+        console.log(resultado.modifiedCount + " elemento atualizado.");
+
+        res.status(200).json({
+            message: isWhat + " atualizado com sucesso"
+        })
+
+    } catch (error) {
+        console.log('Impossivel atualizar, erro inesperado no servidor: ' + error);
+
+        res.status(500).json({
+            message: 'Internal Server Error',
+        });
+
+    }
+});
+
+// Funções middleware para eliminar elementos por id
+
+app.use('/delete/:isWhat', async (req, res) => {
+    try{
+        const isWhat = req.params.isWhat;
+        var collection;
+        
+        if(isWhat === "aluno"){
+            collection = db.collection('Alunos');
+        } else if (isWhat === "curso"){
+            collection = db.collection('Cursos');
+        } else {
+            throw error("Parametro desconhecido");
+        }
+
+        var o_id = new ObjectId(req.body.id);
+        const resultado = await collection.deleteOne({_id: o_id});
+
+        console.log(resultado.deletedCount + isWhat + "(s) corresponderam á pesquisa e foram eliminados");
+
+        res.status(200).json({
+            message: isWhat+" eliminado com sucesso"
+        })
+
+    } catch (error) {
+        console.log('Impossivel eliminar, erro inesperado no servidor: ' + error);
+
+        res.status(500).json({
+            message: 'Internal Server Error',
+        });
+        
+    }
+});
+
+// funções middleware para encontrar elementos por id
+
+app.use('/find/:isWhat/:id', async (req, res) => {
+    try{
+        const isWhat = req.params.isWhat;
+        var collection;
+        
+        if(isWhat === "aluno"){
+            collection = db.collection('Alunos');
+        } else if (isWhat === "curso"){
+            collection = db.collection('Cursos');
+        } else {
+            throw error("Parametro desconhecido");
+        }
+
+        var o_id = new ObjectId(req.params.id);
+        //const projectFields = { _id: 0, nome: 1, apelido: 1, idade: 1, anoCurricular: 1, curso: 1 };
+
+        const resultado = await collection.findOne({_id: o_id})//.project(projectFields);
+
+        console.log(isWhat + " encontrado: ", await resultado);
+
+        res.send(await resultado);
+
+    }catch(error){
+        console.log('Impossivel encontrar, erro inesperado no servidor: ' + error);
+
+        res.status(500).json({
+            message: 'Internal Server Error',
+        });
+    }
+});
+
+// Configura servidor para servir arquivos estáticos da pasta 'public'
+app.use(express.static('public'));
+
+
+// Rota de login: autentica username e cria sessão
+app.post('/login', async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    // Procura username na base de dados
+    userdb = await collection.findOne({ username: username, password: password });
+    if (userdb) {
+        // username autenticado com sucesso
+        console.log(`Utilizador ${username} autenticado com sucesso.`);
+        req.session.username = username;
+        return res.redirect('/segredo');    
+    } else {  
+        // Falha na autenticação
+        console.log(`Falha na autenticação para o usuário ${username}.`);
+        return res.redirect('/login.html');
+    }
+});
+
+// Middleware para proteger rotas: verifica se username está autenticado
+function estaAutenticado(req, res, next) {
+    if (req.session.username) {
+        next();
+    } else {
+        res.status(401).redirect('/login.html');
+    }
+}
+
+// Rota protegida: só acessível se autenticado
+app.get('/segredo', estaAutenticado, (req, res) => {
+    // Adiciona link para a página de pesquisa
+    res.send(`
+        <h1>Bem-vindo ao segredo, ${req.session.username}!</h1>
+        <p><a href="/pesquisa.html">Ir para pesquisa de país</a></p>
+        <p><a href="/logout">Logout</a></p>
+    `);
+});
+
+// Rota de logout: destroi a sessão autenticada
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login.html');
+});
+
+// Variáveis globais para banco de dados
+let db; // instância da ligacao à BD MongoDB
+
+// Função para conectar ao MongoDB e iniciar o servidor
+async function start() {
+    console.log('Iniciando aplicação...');
+    try { 
+        // Cria um novo cliente MongoDB usando a string de conexão do .env ou padrão local
+        const client = new MongoClient(process.env.MONGO_URI);
+        await client.connect(); // Estabelece conexão com base de dados
+        console.log('Ligado ao MongoDB');
+        db = client.db(process.env.DB_NAME); // Seleciona a base de dados 'usersdb'
+        // Inicia o servidor Express na porta definida no .env ou 3001
+        return app.listen(process.env.PORT || 5000, () => {
+            const port = process.env.PORT || 5000;
+            console.log("Servidor pronto na porta " + port);
+        });
+    }
+    catch (error) {
+        // Mostra erro caso não consiga ligar BD e/ou servidor
+        console.error('Erro ao iniciar', error);
+    }
+}
+
+// Inicia a aplicação
+start();
