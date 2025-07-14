@@ -484,6 +484,11 @@ async function makeCursoInputs(row){
     nomeInput.setAttribute("class", "text input");
     namedata.appendChild(nomeInput);
 
+    const blankdata = document.createElement("td");
+    const blankspace = document.createElement("p");
+    blankspace.innerHTML = " ";
+    blankdata.appendChild(blankspace);
+
     let acoesdata = document.createElement("td");
     let btnCriarCurso = document.createElement("button");
     btnCriarCurso.setAttribute("type", "button");
@@ -493,5 +498,6 @@ async function makeCursoInputs(row){
     acoesdata.appendChild(btnCriarCurso);
 
     row.appendChild(namedata);
+    row.appendChild(blankdata);
     row.appendChild(acoesdata);
 }
