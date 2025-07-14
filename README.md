@@ -1,153 +1,80 @@
-# Trabalho Prático #1
+# Gestão de alunos (Trabalho 1)
 
-## Consumo e Implementação de APIs RESTful
+Projeto desenvolvido por Gonçalo Duque Correia, n. 29435
 
-### Objetivo Geral
+## Descrição
 
-Consolidar os conhecimentos em desenvolvimento web com foco na criação, consumo e implementação de APIs RESTful utilizando tecnologias do ecossistema JavaScript:
+Esta aplicação permite:
 
-- Node.js + Express
-- MongoDB / MongoDB Atlas
-- JSON-Server
-- Fetch API
-- Swagger (opcional)
+- A gestão de alunos e de cursos guardados numa base de dados MongoDB
+- Permitir a edição, visualização, remoção e criação de novos alunos/cursos
 
-O projeto simula o ciclo completo de desenvolvimento de uma aplicação web com front-end e back-end separados, incluindo testes e deploy.
 
----
+## Execução Local
 
-## Partes do Trabalho
+### Pré-requisitos
+- [Node.js](https://nodejs.org/) (v18 ou superior recomendado)
+- [MongoDB](https://www.mongodb.com/) (local ou Atlas)
+- npm (geralmente já vem com o Node.js)
 
-### Parte 1: Estruturação da Base de Dados (JSON)
 
-- Criar um ficheiro `bd.json` com:
+### Instalação
+1. **Clone o repositório:**
+2. **Instale as dependências:**
+3. **Configure as variáveis de ambiente:**
+    1. Poderá obter a string de conexão do MongoDB na sua dashboard do Atlas
+4. **Certifique-se que o MongoDB está a correr.**
+    1. Configure a string de conexão para Atlas no `.env`
 
-  - Lista de alunos: `nome`, `apelido`, `curso`, `anoCurricular`
-  - Lista de cursos: `nomeDoCurso`
 
-- 📁 Diretório sugerido: `/mock-data/`
-- 📄 Entregável: `bd.json`
+### Como executar o projeto
 
----
+diretamente invocando o node.js
 
-### Parte 2: API Simulada com JSON-Server + Testes
+```sh 
+node server.js
 
-- Configurar e iniciar `json-server` com `bd.json`
-- Testar os endpoints com Postman (CRUD de alunos, leitura de cursos)
-- Exportar a coleção de testes
-
-- 📁 Diretório sugerido: `/mock-server/`
-- 📄 Entregáveis:
-  - Código de configuração (`package.json`, script json-server)
-  - Coleção `.json` do Postman em `/tests/`
-
----
-
-### Parte 3: Interface Web (CRUD de Alunos)
-
-- Desenvolver uma página web funcional para gerir alunos:
-  - Ver alunos
-  - Adicionar aluno
-  - Editar aluno
-  - Apagar aluno
-- Utilizar `Fetch API` e programação assíncrona
-
-- 📁 Diretório sugerido: `/frontend/`
-- 📄 Entregável: Página funcional conectada à API simulada
-
----
-
-### Parte 4: API RESTful real (Node.js + Express + MongoDB Atlas)
-
-- Migrar os dados para o MongoDB Atlas
-- Implementar a API Express com endpoints equivalentes ao JSON-server
-- Manter a estrutura RESTful
-- Sugestão : usar mongoose a abordagem MVC (bónus 5%)
-
-- 📁 Diretório sugerido: `/backend/`
-- 📄 Entregável: Código funcional da API com instruções
-
----
-
-### Parte 5: Deploy da Aplicação
-
-- Fazer deploy do front-end no [Vercel](https://vercel.com)
-- (Opcional) Fazer deploy da API no [Render](https://render.com)
-- Adaptar o front-end para consumir a nova API
-
-📄 Incluir no `README.md`:
-
-- URL pública do front-end
-- URL da API real
-- 📄 Entregável: Links funcionais no repositório
-
----
-
-### Parte 6 (Bonificação): Documentação da API
-
-- Utilizar Swagger para documentar os endpoints da API
-- Incluir rota `/api-docs` na aplicação
-
-- 📁 Diretório sugerido: `/backend/docs/`
-- 📄 Entregável: Swagger funcional e acessível
-
----
-
-## Organização do Projeto
-
-```text
-projeto-raiz/
-│
-├── /frontend/ ← Interface web (HTML/CSS/JS)
-├── /backend/ ← API RESTful com Node.js + MongoDB
-├── /mock-server/ ← JSON-server configurado
-├── /mock-data/ ← Base de dados JSON original
-├── /tests/ ← Coleção de testes Postman
-├── README.md ← Instruções, links e notas
-└── .gitignore, etc.
 ```
 
+Ou via npm
+
+```sh
+npm start
+
+```
+
+A aplicação ficará disponível em [http://localhost:3000](http://localhost:3000) (ou na porta definida no `.env`).
+
+
+### Estrutura de pastas
+``` 
+Trabalho2/
+│
+...
+│
+├── frontend/
+│   ├── fonts/
+│   ├── script.js
+│   ├── estilo.css
+│   └── index.html
+├── backend/
+│   ├── server.js
+│   ├── package.json
+│   ├── package-lock.json
+│   └── .env
+└── README.md
+```
+
+## Execução Remota
+Para utilizar este programa utilizando o seu deploy no [Render](https://render.com/) e no [Vercel](https://vercel.com/), pode ser utilizado o link [https://trab1-pw-frontend-gray.vercel.app/](https://trab1-pw-frontend-gray.vercel.app/), que nos vai levar diretamente para a instancia disponivel no Vercel.
+O Render é mantido ativo utilizando o website [UpTimeRobot](https://uptimerobot.com/), logo, deveria estar disponivel sempre que possivel.
+
+## Fluxo de utilização
+1. Escolha se pertende gerir cursos ou alunos
+2. Execute operações á sua escolha.
+
+## Notas para desenvolvimento
+- O código está comentado para facilitar a compreensão.
+- Para qualquer dúvida, consulte os comentários no código fonte.
+
 ---
-
-## Sugestão de Branches
-
-| Branch     | Descrição                        |
-| ---------- | -------------------------------- |
-| `main`     | Versão estável e final           |
-| `dev`      | Desenvolvimento geral            |
-| `frontend` | Interface e interação do usuário |
-| `api`      | API real (Node + MongoDB)        |
-| `deploy`   | Adaptações para Vercel/Render    |
-
----
-
-## Critérios de Avaliação
-
-| Critério                         | Peso |
-| -------------------------------- | ---- |
-| Base de dados JSON correta       | 10%  |
-| API simulada e testada (Postman) | 10%  |
-| Funcionalidade do front-end      | 30%  |
-| Qualidade da API real (Node.js)  | 30%  |
-| Integração front-end/backend     | 10%  |
-| Deploy funcional                 | 10%  |
-| Bonificação (MVC)                | +5%  |
-| Bonificação (Swagger)            | +5%  |
-
----
-
-## Entrega
-
-- Entrega via **GitHub Classroom**.
-- O repositório deve conter:
-  - Código funcional
-  - README.md com instruções claras
-  - Links de deploy (front e opcionalmente back)
-
----
-
-### Repositório Base
-
-Usa o repositório template inicial fornecido no GitHub Classroom.
-# TWT1RESTAPI
-# TRAB1_TEMPLATE
