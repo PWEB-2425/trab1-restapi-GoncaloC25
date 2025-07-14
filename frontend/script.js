@@ -4,8 +4,7 @@ const btncriar = document.getElementById("adicionar-btn");
 btnaluno.addEventListener("click", mostraAlunos);
 btncurso.addEventListener("click", mostraCursos);
 
-const alunosurl = "https://trab1-pw.onrender.com/alunos/";
-const cursosurl = "https://trab1-pw.onrender.com/cursos/";
+const baseurl = "https://trab1-pw.onrender.com/";
 
 const table = document.getElementById("tabela");
 let alunos = 0;
@@ -22,15 +21,11 @@ btncriar.addEventListener("click", () => {
 listarAlunos();
 
 async function listarAlunos(){
-    const alunosresposta = await fetch(alunosurl);
-    const cursosresposta = await fetch(cursosurl);
-
+    const alunosresposta = await fetch(baseurl + "listar/aluno");
+    const cursosresposta = await fetch(baseurl + "listar/curso");
+    
     const alunosJS = await alunosresposta.json();
-    const alunosArray = alunosJS[0]?.alunos ?? [];
-
     const cursosJS = await cursosresposta.json();
-    const cursosArray = cursosJS[0]?.cursos ?? [];
-    console.log(alunosArray);
 
     table.innerHTML = "";
 
@@ -38,7 +33,7 @@ async function listarAlunos(){
 
     const tbody = document.createElement("tbody");
 
-    for (aluno of alunosArray) {
+    for (aluno of alunosJS) {
 
         const trow = document.createElement("tr");
         let namedata = document.createElement("td");
@@ -50,28 +45,28 @@ async function listarAlunos(){
         let editBtn = document.createElement("button");
 
         namedata.innerHTML = aluno.nome + " " + aluno.apelido;
-        coursedata.innerHTML = cursosArray.find(curso => curso.id == aluno.curso)?.nomeDoCurso || "Curso Desconhecido"; 
+        coursedata.innerHTML = cursosJS.find(curso => curso._id == aluno.curso)?.nomeDoCurso || "Curso Desconhecido"; 
         idadedata.innerHTML = aluno.idade + " anos";
         anodata.innerHTML = aluno.anoCurricular + "º ano";
 
-        delBtn.setAttribute("data-alunoid", aluno.id);
+        delBtn.setAttribute("data-alunoid", aluno._id);
         delBtn.setAttribute("type", "button");
-        delBtn.setAttribute("id", "btnDel"+aluno.id);
+        delBtn.setAttribute("id", "btnDel"+aluno._id);
         delBtn.setAttribute("class", "btn btn-danger");
         delBtn.innerHTML = "Remover";
         delBtn.addEventListener("click", removerAluno);
 
-        editBtn.setAttribute("data-alunoid", aluno.id);
+        editBtn.setAttribute("data-alunoid", aluno._id);
         editBtn.setAttribute("type", "button");
         editBtn.setAttribute("class", "btn");
-        editBtn.setAttribute("id", "btnEdit"+aluno.id);
+        editBtn.setAttribute("id", "btnEdit"+aluno._id);
         editBtn.innerHTML = "Editar";
         editBtn.addEventListener("click", editarAluno);
 
         acoesdata.appendChild(delBtn);
         acoesdata.appendChild(editBtn);
 
-        trow.setAttribute("data-alunoid", aluno.id);
+        trow.setAttribute("data-alunoid", aluno._id);
         trow.appendChild(namedata);
         trow.appendChild(idadedata);
         trow.appendChild(anodata);
@@ -121,10 +116,13 @@ async function criarAluno() {
             return;
         }
 
-
-        alunoJSON = JSON.stringify(alunoElement);
-
-        const resposta = await fetch(alunosurl,{method:"POST", body:alunoJSON});
+        const response = await fetch(baseurl + 'criar/aluno', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(alunoElement)
+        });
 
         table.removeChild(table.lastChild);
         await listarAlunos();
@@ -137,7 +135,14 @@ async function removerAluno(evento) {
     const botaoclicado = evento.target;
     const idaluno = botaoclicado.dataset.alunoid;
 
-    const resposta = await fetch(alunosurl + idaluno, {method:"DELETE"});
+    const resposta = await fetch(baseurl + "delete/aluno", {
+        method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'  // ← Essential for JSON data
+            },
+        body: JSON.stringify({ id: idaluno })
+    });
+
     await listarAlunos();
     
 }
@@ -158,8 +163,10 @@ async function editarAluno(evento) {
     const table = document.getElementById("tabela");
     const row = table.querySelector("tr[data-alunoid='" + idaluno + "']");
 
-    const alunoeditUrl = alunosurl + idaluno;
-    const alunoEditResponse = await fetch(alunoeditUrl);
+    const alunoEditResponse = await fetch (baseurl + "find/aluno/" + idaluno, {
+        method: "GET"
+    });
+
     const alunoEdit = await alunoEditResponse.json();
 
     row.innerHTML = "";
@@ -184,7 +191,8 @@ async function editarAluno(evento) {
             apelido: inputs[1].value,
             idade: inputs[2].value,
             anoCurricular: inputs[3].value,
-            curso: inputs[4].value
+            curso: inputs[4].value,
+            id: idaluno
         };
 
         let hasEmptyField = false;
@@ -199,20 +207,16 @@ async function editarAluno(evento) {
             alert("Existem Campos Vazios, impossivel adicionar.");
             table.removeChild(table.lastChild);
             listarAlunos();
-    nomeInput.setAttribute("type", "text");
-    nomeInput.setAttribute("id", "aluno_nome");
-    nomeInput.setAttribute("placeholder", "Nome");
-    nomeInput.setAttribute("class", "text input");
-    let apelidoInput = document.createElement("input");
-    apelidoInput.setAttribute("type", "text");
-    apelidoInput.setAttribute("id", "aluno_apeli");
-    apelidoInput.setAttribute("placeholder", "Apelido");
             return;
         }
 
-        alunoJSON = JSON.stringify(alunoElement);
-
-        const resposta = await fetch(alunoeditUrl, {method:"PUT", body:alunoJSON});
+        const resposta = await fetch(baseurl + "update/aluno", {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'  // ← Essential for JSON data
+            },
+            body: JSON.stringify(alunoElement)     // ← Use alunoElement (object) instead of alunoJSON (string)
+        });
 
         await listarAlunos();
         
@@ -220,9 +224,8 @@ async function editarAluno(evento) {
 }
 
 async function makeInptus(row){
-    const cursosresposta = await fetch(cursosurl);
+    const cursosresposta = await fetch(baseurl + "listar/curso");
     const cursosJS = await cursosresposta.json();
-    const cursosArray = cursosJS[0]?.cursos ?? [];
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");
@@ -260,9 +263,9 @@ async function makeInptus(row){
     cursoSelect.setAttribute("class", "select input");
     cursodata.appendChild(cursoSelect);
 
-    for (let curso of cursosArray) {
+    for (let curso of cursosJS) {
         const option = document.createElement("option");
-        option.value = curso.id; 
+        option.value = curso._id; 
         option.textContent = curso.nomeDoCurso;
         option.setAttribute("class", "option");
         cursoSelect.appendChild(option);
@@ -292,20 +295,18 @@ function mostraCursos() {
 }
 
 async function listarCurso(){
-    const cursosresposta = await fetch(cursosurl);
+    const cursosresposta = await fetch(baseurl + "listar/curso");
     const cursosJS = await cursosresposta.json();
-    const cursosArray = cursosJS[0]?.cursos ?? [];
 
-    const alunosresposta = await fetch(alunosurl);
+    const alunosresposta = await fetch(baseurl + "listar/aluno");
     const alunosJS = await alunosresposta.json();
-    const alunosArray = alunosJS[0]?.alunos ?? [];
 
     table.innerHTML = "";
     table.innerHTML = "<thead><tr><th>Nome do Curso</th><th>Alunos Inscritos</th><th>Ações</th></tr></thead>";
 
     const tbody = document.createElement("tbody");
 
-    for (curso of cursosArray) {
+    for (curso of cursosJS) {
         const trow = document.createElement("tr");
         let namedata = document.createElement("td");
         let alunosData = document.createElement("td");
@@ -315,27 +316,27 @@ async function listarCurso(){
 
         namedata.innerHTML = curso.nomeDoCurso;
 
-        let alunosCount = alunosArray.filter(a => a.curso === curso.id).length;
+        let alunosCount = alunosJS.filter(a => a.curso === curso._id).length;
         alunosData.innerHTML = alunosCount > 0 ? alunosCount + " Aluno(s)" : "Nenhum Aluno Inscrito";
 
-        delBtn.setAttribute("data-cursoid", curso.id);
+        delBtn.setAttribute("data-cursoid", curso._id);
         delBtn.setAttribute("type", "button");
-        delBtn.setAttribute("id", "btnDel"+curso.id);
+        delBtn.setAttribute("id", "btnDel"+curso._id);
         delBtn.setAttribute("class", "btn btn-danger");
         delBtn.innerHTML = "Remover";
         delBtn.addEventListener("click", removerCurso);
 
-        editBtn.setAttribute("data-cursoid", curso.id);
+        editBtn.setAttribute("data-cursoid", curso._id);
         editBtn.setAttribute("type", "button");
         editBtn.setAttribute("class", "btn");
-        editBtn.setAttribute("id", "btnEdit"+curso.id);
+        editBtn.setAttribute("id", "btnEdit"+curso._id);
         editBtn.innerHTML = "Editar";
         editBtn.addEventListener("click", editarCurso);
 
         acoesdata.appendChild(delBtn);
         acoesdata.appendChild(editBtn);
 
-        trow.setAttribute("data-cursoid", curso.id);
+        trow.setAttribute("data-cursoid", curso._id);
         trow.appendChild(namedata);
         trow.appendChild(alunosData);
         trow.appendChild(acoesdata);
@@ -349,7 +350,11 @@ async function listarCurso(){
 async function criarCurso() {
 
     const tempRow = document.createElement("tr");
-    const tbody = table.querySelector("tbody");
+    var tbody = table.querySelector("tbody");
+
+    if (tbody === null) {
+        tbody = document.createElement("tbody");
+    }
 
     await makeCursoInputs(tempRow);
 
@@ -371,9 +376,18 @@ async function criarCurso() {
             return;
         }
 
-        cursoJSON = JSON.stringify(cursoElement);
+        const response = await fetch(baseurl + 'criar/curso', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cursoElement)
+        });
 
-        const resposta = await fetch(cursosurl,{method:"POST", body:cursoJSON});
+        console.log('Pedido enviado');
+
+        const data = await response.json();
+        console.log('Curso criado:', data);
 
         table.removeChild(table.lastChild);
         await listarCurso();
@@ -386,7 +400,19 @@ async function removerCurso(evento) {
     const botaoclicado = evento.target;
     const idcurso = botaoclicado.dataset.cursoid;
 
-    const resposta = await fetch(cursosurl + idcurso, {method:"DELETE"});
+    console.log("Deleting curso with ID:", idcurso);
+
+    const resposta = await fetch(baseurl + "delete/curso", {
+        method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'  // ← Essential for JSON data
+            },
+        body: JSON.stringify({ id: idcurso })
+    });
+
+    const data = await resposta.json();
+    console.log('Curso eliminado:', data.message);
+
     await listarCurso();
     
 }
@@ -397,7 +423,10 @@ async function editarCurso(evento) {
     const idcurso = botaoclicado.dataset.cursoid;
     const tbody = table.querySelector("tbody");
 
-    const cursoEditResponse = await fetch(cursosurl + idcurso);
+    const cursoEditResponse = await fetch(baseurl + 'find/curso/' + idcurso, {
+        method : "GET",
+    });
+
     const cursoEdit = await cursoEditResponse.json();
 
     const row = table.querySelector("tr[data-cursoid='" + idcurso + "']");
@@ -417,10 +446,9 @@ async function editarCurso(evento) {
     btnCriarCurso.addEventListener("click", async () => {
 
         const cursoElement = {
+            id: idcurso,
             nomeDoCurso: inputs.value
         };
-
-        let hasEmptyField = false;
 
         if (inputs.value == null) {
             alert("Campo Nome do Curso vazio, impossivel adicionar.");
@@ -431,14 +459,22 @@ async function editarCurso(evento) {
 
         cursoJSON = JSON.stringify(cursoElement);
 
-        const resposta = await fetch(cursosurl+idcurso, {method:"PUT", body:cursoJSON});
+        const resposta = await fetch(baseurl + "update/curso", {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cursoElement)
+        });
 
-        await listarAlunos();
+        await listarCurso();
         
     });
 }
 
-function makeCursoInputs(row){
+async function makeCursoInputs(row){
+    const cursosresposta = await fetch(baseurl + "listar/curso");
+    const cursosJS = await cursosresposta.json();
 
     let namedata = document.createElement("td");
     let nomeInput = document.createElement("input");

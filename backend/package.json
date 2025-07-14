@@ -5,5 +5,19 @@
     "express": "^5.1.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.1"
-  }
+  },
+  "name": "deploy",
+  "version": "1.0.0",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
