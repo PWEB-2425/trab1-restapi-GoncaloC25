@@ -4,10 +4,11 @@ Projeto desenvolvido por Gonçalo Duque Correia, n. 29435
 
 ## Descrição
 
-Esta aplicação permite:
+Este é um programa CRUD (Create, Read, Update, Delete) de alunos. Ele permite gerir alunos inscritos em diversos cursos. Permite ainda a gestão dos cursos. Neste programa, pode ser utilizada a base de dados MongoDB, hospedada localmente, disponivel na banch "Backend", ou no serviço Web render, disponivel na branch "deploy". Existe ainda a possibilidade de utilizar o programa com uma simples base de dados json, utilizando o json-server, implementado também na branch "Backend".
 
+Assim sendo, esta aplicação permite:
 - A gestão de alunos e de cursos guardados numa base de dados MongoDB
-- Permitir a edição, visualização, remoção e criação de novos alunos/cursos
+- Permitir a edição, visualização, remoção e criação de novos alunos/cursos.
 
 
 ## Execução Local
