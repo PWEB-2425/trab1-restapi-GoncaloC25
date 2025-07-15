@@ -18,65 +18,87 @@ btncriar.addEventListener("click", () => {
     }
 });
 
+getUser();
 listarAlunos();
 
+async function getUser(){
+    const response = await fetch(baseurl + 'profile', {redirect: "follow"});
+
+    if (response.redirected){
+        window.location.href = response.url;
+    }
+
+    if(response.ok){
+        const user = await response.json();
+
+        document.getElementById("usergreeting").innerHTML = `Bem-vindo, ${user.name}`;
+    }
+}
+
 async function listarAlunos(){
-    const alunosresposta = await fetch(baseurl + "listar/aluno");
+    const alunosresposta = await fetch(baseurl + "listar/aluno", {redirect: 'follow'});
     const cursosresposta = await fetch(baseurl + "listar/curso");
     
-    const alunosJS = await alunosresposta.json();
-    const cursosJS = await cursosresposta.json();
-
-    table.innerHTML = "";
-
-    table.innerHTML = "<thead><tr><th>Nome</th><th>Idade</th><th>Ano Curricular</th><th>Curso</th><th>Ações</th></tr></thead>";
-
-    const tbody = document.createElement("tbody");
-
-    for (aluno of alunosJS) {
-
-        const trow = document.createElement("tr");
-        let namedata = document.createElement("td");
-        let coursedata = document.createElement("td");
-        let idadedata = document.createElement("td");
-        let anodata = document.createElement("td");
-        let acoesdata = document.createElement("td");
-        let delBtn = document.createElement("button");
-        let editBtn = document.createElement("button");
-
-        namedata.innerHTML = aluno.nome + " " + aluno.apelido;
-        coursedata.innerHTML = cursosJS.find(curso => curso._id == aluno.curso)?.nomeDoCurso || "Curso Desconhecido"; 
-        idadedata.innerHTML = aluno.idade + " anos";
-        anodata.innerHTML = aluno.anoCurricular + "º ano";
-
-        delBtn.setAttribute("data-alunoid", aluno._id);
-        delBtn.setAttribute("type", "button");
-        delBtn.setAttribute("id", "btnDel"+aluno._id);
-        delBtn.setAttribute("class", "btn btn-danger");
-        delBtn.innerHTML = "Remover";
-        delBtn.addEventListener("click", removerAluno);
-
-        editBtn.setAttribute("data-alunoid", aluno._id);
-        editBtn.setAttribute("type", "button");
-        editBtn.setAttribute("class", "btn");
-        editBtn.setAttribute("id", "btnEdit"+aluno._id);
-        editBtn.innerHTML = "Editar";
-        editBtn.addEventListener("click", editarAluno);
-
-        acoesdata.appendChild(delBtn);
-        acoesdata.appendChild(editBtn);
-
-        trow.setAttribute("data-alunoid", aluno._id);
-        trow.appendChild(namedata);
-        trow.appendChild(idadedata);
-        trow.appendChild(anodata);
-        trow.appendChild(coursedata);
-        trow.appendChild(acoesdata);
-
-        tbody.appendChild(trow);
+    if (alunosresposta.redirected){
+        window.location.href = alunosresposta.url;
     }
-    
-    table.appendChild(tbody);
+
+
+    if(alunosresposta.ok){
+        const alunosJS = await alunosresposta.json();
+        const cursosJS = await cursosresposta.json();
+
+        table.innerHTML = "";
+
+        table.innerHTML = "<thead><tr><th>Nome</th><th>Idade</th><th>Ano Curricular</th><th>Curso</th><th>Ações</th></tr></thead>";
+
+        const tbody = document.createElement("tbody");
+
+        for (aluno of alunosJS) {
+
+            const trow = document.createElement("tr");
+            let namedata = document.createElement("td");
+            let coursedata = document.createElement("td");
+            let idadedata = document.createElement("td");
+            let anodata = document.createElement("td");
+            let acoesdata = document.createElement("td");
+            let delBtn = document.createElement("button");
+            let editBtn = document.createElement("button");
+
+            namedata.innerHTML = aluno.nome + " " + aluno.apelido;
+            coursedata.innerHTML = cursosJS.find(curso => curso._id == aluno.curso)?.nomeDoCurso || "Curso Desconhecido"; 
+            idadedata.innerHTML = aluno.idade + " anos";
+            anodata.innerHTML = aluno.anoCurricular + "º ano";
+
+            delBtn.setAttribute("data-alunoid", aluno._id);
+            delBtn.setAttribute("type", "button");
+            delBtn.setAttribute("id", "btnDel"+aluno._id);
+            delBtn.setAttribute("class", "btn btn-danger");
+            delBtn.innerHTML = "Remover";
+            delBtn.addEventListener("click", removerAluno);
+
+            editBtn.setAttribute("data-alunoid", aluno._id);
+            editBtn.setAttribute("type", "button");
+            editBtn.setAttribute("class", "btn");
+            editBtn.setAttribute("id", "btnEdit"+aluno._id);
+            editBtn.innerHTML = "Editar";
+            editBtn.addEventListener("click", editarAluno);
+
+            acoesdata.appendChild(delBtn);
+            acoesdata.appendChild(editBtn);
+
+            trow.setAttribute("data-alunoid", aluno._id);
+            trow.appendChild(namedata);
+            trow.appendChild(idadedata);
+            trow.appendChild(anodata);
+            trow.appendChild(coursedata);
+            trow.appendChild(acoesdata);
+
+            tbody.appendChild(trow);
+        }
+
+        table.appendChild(tbody);
+    }
 }
 
 async function criarAluno() {
@@ -484,6 +506,11 @@ async function makeCursoInputs(row){
     nomeInput.setAttribute("class", "text input");
     namedata.appendChild(nomeInput);
 
+    const emptydata = document.createElement("td");
+    const emptyp = document.createElement("p");
+    emptyp.innerHTML = 'A aguardar confirmação';
+    emptydata.appendChild(emptyp);
+
     let acoesdata = document.createElement("td");
     let btnCriarCurso = document.createElement("button");
     btnCriarCurso.setAttribute("type", "button");
@@ -493,5 +520,6 @@ async function makeCursoInputs(row){
     acoesdata.appendChild(btnCriarCurso);
 
     row.appendChild(namedata);
+    row.appendChild(emptydata);
     row.appendChild(acoesdata);
 }

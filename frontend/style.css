@@ -13,6 +13,17 @@ body {
   animation: fadeIn 2s ease 0s 1 normal forwards;
 }
 
+footer {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  position: fixed;
+  bottom: 0px;
+  background-color: #515151;
+
+}
+
 .mainmenu {
     font-size: x-large;
     text-align: center;
@@ -22,6 +33,7 @@ body {
 .divider {
   margin: 20px;
   padding: 10px;
+  margin-bottom: 45px;
 }
 
 .btn-divider {
@@ -189,6 +201,35 @@ body {
   background-color: #c4aea0;
   color: #252424;
 }
+
+.small.header {
+  color: #c4aea0;
+  font-size: smaller;
+  margin-bottom: 3px;
+}
+
+.text .input .login{
+    flex: 1;
+    margin: 0 3px; 
+    padding: 10px; 
+    width: 100%;
+    position: absolute;
+}
+
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout span{
+  font-size: small;
+
+}
+
 
 @font-face {
   font-family: Coolvetica;

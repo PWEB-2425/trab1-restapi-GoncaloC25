@@ -1,24 +1,25 @@
 // Importa módulos necessários
 const express = require('express');
+const session = require('express-session');
 const { MongoClient, ObjectId } = require('mongodb');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+
 dotenv.config();
+
+const baseurl = 'http://127.0.0.1:5500'
 
 // Cria uma instância do Express
 const app = express();
+
+app.use(session({ secret: process.env.SECRET }));
 
 // Permite receber dados de formulários via POST
 app.use(express.urlencoded({ extended: true }));
 // Permite receber dados em JSON
 app.use(express.json());
 app.use(cors());
-
-
-// Rota pública de exemplo
-app.get('/about', (req, res) => {
-    res.send('Sobre nós');
-});
 
 // proteger a pagina estatica '/pesquisa.html'
 // tem que ser feito antes de configurar o servidor estatico
@@ -66,7 +67,7 @@ app.use('/criar/:isWhat', async (req, res) => {
 
 // Função para listar entradas na base de dados
 
-app.use('/listar/:isWhat', async (req, res) => {
+app.use('/listar/:isWhat', estaAutenticado, async (req, res) => {
     try{
         const isWhat = req.params.isWhat;
         var collection;
@@ -209,52 +210,58 @@ app.use('/find/:isWhat/:id', async (req, res) => {
     }
 });
 
-// Configura servidor para servir arquivos estáticos da pasta 'public'
-app.use(express.static('public'));
 
+
+// Configura servidor para servir arquivos estáticos da pasta 'public'
+app.use(express.static('../frontend'));
 
 // Rota de login: autentica username e cria sessão
 app.post('/login', async (req, res) => {
+    const collection = db.collection('Admins');
     const username = req.body.username;
     const password = req.body.password;
-
+    
     // Procura username na base de dados
-    userdb = await collection.findOne({ username: username, password: password });
-    if (userdb) {
-        // username autenticado com sucesso
-        console.log(`Utilizador ${username} autenticado com sucesso.`);
-        req.session.username = username;
-        return res.redirect('/segredo');    
-    } else {  
-        // Falha na autenticação
-        console.log(`Falha na autenticação para o usuário ${username}.`);
-        return res.redirect('/login.html');
-    }
+    const userdb = await collection.findOne({ username: username });
+
+    bcrypt.compare(password, userdb.password, async function (err, isMatch) {
+        if (isMatch) {
+            // username autenticado com sucesso
+            console.log(`Utilizador ${username} autenticado com sucesso.`);
+            req.session.username = username;
+            return res.redirect('/index.html');    
+        } else {  
+            // Falha na autenticação
+            console.log(`Falha na autenticação para o usuário ${username}.`);
+            return res.redirect('/login.html');
+        }
+    });
 });
 
 // Middleware para proteger rotas: verifica se username está autenticado
 function estaAutenticado(req, res, next) {
     if (req.session.username) {
+        console.log("Utilizador autenticado");
         next();
     } else {
-        res.status(401).redirect('/login.html');
+        console.log("Utilizador não autenticado");
+        res.redirect(302, '/login.html');
     }
 }
-
-// Rota protegida: só acessível se autenticado
-app.get('/segredo', estaAutenticado, (req, res) => {
-    // Adiciona link para a página de pesquisa
-    res.send(`
-        <h1>Bem-vindo ao segredo, ${req.session.username}!</h1>
-        <p><a href="/pesquisa.html">Ir para pesquisa de país</a></p>
-        <p><a href="/logout">Logout</a></p>
-    `);
-});
 
 // Rota de logout: destroi a sessão autenticada
 app.get('/logout', (req, res) => {
     req.session.destroy();
+    console.log("Sessão destruida")
     res.redirect('/login.html');
+});
+
+app.get('/profile', estaAutenticado, (req, res) => {
+    const username = req.session.username
+    console.log(`Utilizador autenticado: ${username}`)
+    res.json({
+        name: username
+    })
 });
 
 // Variáveis globais para banco de dados
