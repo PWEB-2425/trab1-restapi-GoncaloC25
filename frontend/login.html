@@ -26,6 +26,14 @@
 </html>
 
 <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const message = localStorage.getItem("loginError");
+        if (message) {
+            document.getElementById("errorMessage").innerHTML = message;
+            localStorage.removeItem("loginError"); // Clear after showing
+        }
+    });
+
     const baseurl = 'https://trab1-pw.onrender.com/'; // Backend URL
 
     document.getElementById('loginForm').addEventListener('submit', async function (event) {
@@ -39,38 +47,26 @@
             password: formData.get('password')
         };
 
-        const message = localStorage.getItem("loginError");
-        if (message) {
-            document.getElementById("errorMessage").innerHTML = message;
-            localStorage.removeItem("loginError"); // Clear after showing
-        }
+           const response = await fetch(baseurl + 'login', {
+               method: 'POST',
+               credentials: 'include',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify(data)
+           });
 
-        try {
-            const response = await fetch(baseurl + 'login', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+           if (response.redirected) {
+               // On success, server sends redirect (302) to frontend baseurl
+               window.location.href = response.url;
+               return;
+           }
 
-            if (response.redirected) {
-                // On success, server sends redirect (302) to frontend baseurl
-                window.location.href = response.url;
-                return;
-            }
+           const result = await response.json();
 
-            const result = await response.json();
-
-            if (response.status === 401) {
-                localStorage.setItem("loginError", result.message);
-                window.location.href = result.redirect;
-            }
-
-        } catch (error) {
-            console.error('Erro no login:', error);
-            alert('Erro de rede ou servidor. Tente novamente.');
-        }
+           if (response.status === 401) {
+               localStorage.setItem("loginError", result.message);
+               window.location.href = result.redirect;
+           }
     });
 </script>
