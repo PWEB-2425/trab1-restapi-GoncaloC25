@@ -235,7 +235,10 @@ app.post('/login', async (req, res) => {
     const userdb = await collection.findOne({ username: username });
 
     if (!userdb) {
-        return res.status(401).redirect(baseurl + 'login.html');
+        return res.status(401).json({
+            redirect: 'login.html',
+            message: "Utilizador não existente"
+        });
     }
 
     bcrypt.compare(password, userdb.password, async function (err, isMatch) {
@@ -247,7 +250,10 @@ app.post('/login', async (req, res) => {
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);
-            return res.status(401).redirect(baseurl + 'login.html');
+            return res.status(401).json({
+                redirect: 'login.html',
+                message: 'Palavra-passe incorreta'
+            });
         }
     });
 });
@@ -259,7 +265,10 @@ function estaAutenticado(req, res, next) {
         res.redirect(baseurl);
     } else {
         console.log("Utilizador não autenticado");
-        res.status(401).redirect(baseurl + 'login.html');
+        res.status(401).json({
+            redirect: 'login.html',
+            message: "Utilizador não autenticado, por favor, faça Login"
+        });
     }
 }
 
