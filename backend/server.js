@@ -14,7 +14,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 app.use(cors({
-    origin: 'https://trab1-pw-frontend-gray.vercel.app', // Frontend URL
+    origin: 'https://trab1-pw-frontend-gray.vercel.app/*', // Frontend URL
     credentials: true
 }));
 
