@@ -36,6 +36,11 @@ footer {
   margin-bottom: 45px;
 }
 
+.divider.login{
+  width: 40vw;
+  margin: 0 auto;
+}
+
 .btn-divider {
     width: 99%;
     display: flex;
@@ -208,12 +213,10 @@ footer {
   margin-bottom: 3px;
 }
 
-.text .input .login{
-    flex: 1;
-    margin: 0 3px; 
-    padding: 10px; 
-    width: 100%;
-    position: absolute;
+.input.login{
+  width: 94%;
+  margin: 0 3px; 
+  padding: 10px; 
 }
 
 .logout {

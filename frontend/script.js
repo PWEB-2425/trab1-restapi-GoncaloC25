@@ -1,3 +1,5 @@
+const { resolve } = require("path");
+
 const btnaluno = document.getElementById("btn_aluno");
 const btncurso = document.getElementById("btn_curso");
 const btncriar = document.getElementById("adicionar-btn");
@@ -24,8 +26,10 @@ listarAlunos();
 async function getUser(){
     const response = await fetch(baseurl + 'profile', {redirect: "follow"});
 
-    if (response.redirected){
-        window.location.href = response.url;
+    if (response.status === 401){
+        const data = response.json();
+        window.location.href = data.redirect;
+        document.getElementById("errorMessage").innerHTML = data.message;
     }
 
     if(response.ok){
@@ -39,8 +43,10 @@ async function listarAlunos(){
     const alunosresposta = await fetch(baseurl + "listar/aluno", {redirect: 'follow'});
     const cursosresposta = await fetch(baseurl + "listar/curso");
     
-    if (alunosresposta.redirected){
-        window.location.href = alunosresposta.url;
+    if (alunosresposta.status === 401){
+        const data = alunosresposta.json();
+        window.location.href = data.redirect;
+        document.getElementById("errorMessage").innerHTML = data.message;
     }
 
 

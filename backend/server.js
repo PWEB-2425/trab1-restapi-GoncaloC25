@@ -226,7 +226,7 @@ app.use('/find/:isWhat/:id', async (req, res) => {
 const baseurl = 'https://trab1-pw-frontend-gray.vercel.app'
 
 // Rota de login: autentica username e cria sessão
-app.use('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     const collection = db.collection('Admins');
     const username = req.body.username;
     const password = req.body.password;
@@ -234,16 +234,20 @@ app.use('/login', async (req, res) => {
     // Procura username na base de dados
     const userdb = await collection.findOne({ username: username });
 
+    if (!userdb) {
+        return res.status(401).json({ success: false, message: 'Utilizador não encontrado' });
+    }
+
     bcrypt.compare(password, userdb.password, async function (err, isMatch) {
         if (isMatch) {
             // username autenticado com sucesso
             console.log(`Utilizador ${username} autenticado com sucesso.`);
             req.session.username = username;
-            return res.redirect(baseurl);    
+            return res.json({ success: true });    
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);
-            return res.redirect(baseurl + '/login.html');
+            return res.status(401).json({ success: false, message: 'Palavra-passe Incorreta:' });
         }
     });
 });
@@ -255,7 +259,7 @@ function estaAutenticado(req, res, next) {
         next();
     } else {
         console.log("Utilizador não autenticado");
-        res.redirect(401, baseurl + '/login.html')
+        res.status(401).json({ success: false, message: 'Utilizador não autenticado, por favor, faça login:' });
     }
 }
 
