@@ -1,5 +1,3 @@
-const { resolve } = require("path");
-
 const btnaluno = document.getElementById("btn_aluno");
 const btncurso = document.getElementById("btn_curso");
 const btncriar = document.getElementById("adicionar-btn");
