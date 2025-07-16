@@ -226,7 +226,7 @@ app.use('/find/:isWhat/:id', async (req, res) => {
 const baseurl = 'https://trab1-pw-frontend-gray.vercel.app'
 
 // Rota de login: autentica username e cria sessão
-app.post('/login', async (req, res) => {
+app.use('/login', async (req, res) => {
     const collection = db.collection('Admins');
     const username = req.body.username;
     const password = req.body.password;
