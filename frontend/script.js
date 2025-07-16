@@ -24,7 +24,7 @@ getUser();
 listarAlunos();
 
 async function getUser(){
-    const response = await fetch(baseurl + 'profile', {redirect: "follow"});
+    const response = await fetch(baseurl + 'profile', {credentials: 'include'});
 
     if (response.status === 401){
         const data = response.json();
@@ -40,7 +40,7 @@ async function getUser(){
 }
 
 async function listarAlunos(){
-    const alunosresposta = await fetch(baseurl + "listar/aluno", {redirect: 'follow'});
+    const alunosresposta = await fetch(baseurl + "listar/aluno");
     const cursosresposta = await fetch(baseurl + "listar/curso");
     
     if (alunosresposta.status === 401){

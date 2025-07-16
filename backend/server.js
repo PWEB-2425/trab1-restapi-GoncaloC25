@@ -243,7 +243,7 @@ app.post('/login', async (req, res) => {
             // username autenticado com sucesso
             console.log(`Utilizador ${username} autenticado com sucesso.`);
             req.session.username = username;
-            return res.json({ success: true });    
+            return res.redirect(baseurl);    
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);
