@@ -11,6 +11,13 @@ dotenv.config();
 // Cria uma instância do Express
 const app = express();
 
+app.set('trust proxy', 1);
+
+app.use(cors({
+    origin: 'https://trab1-pw-frontend-gray.vercel.app', // Frontend URL
+    credentials: true
+}));
+
 app.use(session({ 
     name: 'sid',
     secret: process.env.SECRET, 
@@ -28,12 +35,6 @@ app.use(session({
 app.use(express.urlencoded({ extended: true }));
 // Permite receber dados em JSON
 app.use(express.json());
-app.use(cors({
-    origin: 'https://trab1-pw-frontend-gray.vercel.app', // Frontend URL
-    credentials: true
-}));
-
-app.set('trust proxy', 1);
 
 // proteger a pagina estatica '/pesquisa.html'
 // tem que ser feito antes de configurar o servidor estatico
@@ -262,7 +263,7 @@ app.post('/login', async (req, res) => {
             // username autenticado com sucesso
             console.log(`Utilizador ${username} autenticado com sucesso.`);
             req.session.username = username;
-            return res.redirect(baseurl);    
+            return res.redirect(baseurl);
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);

@@ -26,13 +26,13 @@
 </html>
 
 <script>
-    window.addEventListener('DOMContentLoaded', () => {
+   /* window.addEventListener('DOMContentLoaded', () => {
         const message = localStorage.getItem("loginError");
         if (message) {
             document.getElementById("errorMessage").innerHTML = message;
             localStorage.removeItem("loginError"); // Clear after showing
         }
-    });
+    });*/
 
     const baseurl = 'https://trab1-pw.onrender.com/'; // Backend URL
 
@@ -56,16 +56,17 @@
                body: JSON.stringify(data)
            });
 
-           if (response.redirected) {
+           if (response.ok) {
                // On success, server sends redirect (302) to frontend baseurl
-               window.location.href = response.url;
+               window.location.href = 'index.html';
                return;
            }
 
            const result = await response.json();
 
            if (response.status === 401) {
-               localStorage.setItem("loginError", result.message);
+               //localStorage.setItem("loginError", result.message);
+               document.getElementById("errorMessage").innerHTML = response.message
                window.location.href = result.redirect;
            }
     });
