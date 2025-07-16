@@ -12,7 +12,7 @@
                 É necessário iniciar sessão:
             </p>
             <div class="sub divider">
-                <form action="https://trab1-pw.onrender.com/login" method="post">
+                <form id="loginForm">
                     <p class="small header">Username:</p>
                     <input name= "username" type="text" placeholder="Username" class = "text input login">
                     <p class = "small header">Password:</p>
@@ -24,3 +24,47 @@
         </div>
     </body>
 </html>
+
+<script>
+    const baseurl = 'https://trab1-pw.onrender.com/'; // Backend URL
+
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const data = {
+            username: formData.get('username'),
+            password: formData.get('password')
+        };
+
+        try {
+            const response = await fetch(baseurl + 'login', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.redirected) {
+                // On success, server sends redirect (302) to frontend baseurl
+                window.location.href = response.url;
+                return;
+            }
+
+            const result = await response.json();
+
+            if (response.status === 401) {
+                document.getElementById("errorMessage").innerHTML = result.message;
+                window.location.href = result.redirect;
+            }
+
+        } catch (error) {
+            console.error('Erro no login:', error);
+            alert('Erro de rede ou servidor. Tente novamente.');
+        }
+    });
+</script>

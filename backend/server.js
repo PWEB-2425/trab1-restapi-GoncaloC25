@@ -276,9 +276,6 @@ app.post('/login', async (req, res) => {
 
 // Middleware para proteger rotas: verifica se username está autenticado
 function estaAutenticado(req, res, next) {
-    console.log('Session data:', req.session);
-    console.log('Session ID:', req.sessionID);
-    console.log('Username in session:', req.session.username);
     
     if (req.session.username) {
         console.log("Utilizador autenticado");
