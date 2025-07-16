@@ -12,14 +12,15 @@ dotenv.config();
 const app = express();
 
 app.use(session({ 
+    name: 'sid',
     secret: process.env.SECRET, 
     resave: false,
     saveUninitialized: false,
     cookie: {
         sameSite: 'none', // allow cross-site
-        secure: process.env.NODE_ENV === 'production', // only secure in production
+        secure: true,
         httpOnly: true,   // prevent XSS attacks
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
     }
 }));
 
@@ -31,6 +32,8 @@ app.use(cors({
     origin: 'https://trab1-pw-frontend-gray.vercel.app', // Frontend URL
     credentials: true
 }));
+
+app.set('trust proxy', 1);
 
 // proteger a pagina estatica '/pesquisa.html'
 // tem que ser feito antes de configurar o servidor estatico
