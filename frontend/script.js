@@ -25,7 +25,7 @@ async function getUser(){
     const response = await fetch(baseurl + 'profile', {credentials: 'include'});
 
     if (response.status === 401){
-        const data = response.json();
+        const data = await response.json();
         console.log(data);
         window.location.href = data.redirect;
         document.getElementById("errorMessage").innerHTML = data.message;
@@ -43,7 +43,7 @@ async function listarAlunos(){
     const cursosresposta = await fetch(baseurl + "listar/curso");
     
     if (alunosresposta.status === 401){
-        const data = alunosresposta.json();
+        const data = await alunosresposta.json();
         console.log(data);
         window.location.href = data.redirect;
         document.getElementById("errorMessage").innerHTML = data.message;
