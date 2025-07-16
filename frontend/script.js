@@ -28,7 +28,6 @@ async function getUser(){
         const data = await response.json();
         console.log(data);
         window.location.href = data.redirect;
-        document.getElementById("errorMessage").innerHTML = data.message;
     }
 
     if(response.ok){
@@ -46,7 +45,6 @@ async function listarAlunos(){
         const data = await alunosresposta.json();
         console.log(data);
         window.location.href = data.redirect;
-        document.getElementById("errorMessage").innerHTML = data.message;
     }
 
 

@@ -250,7 +250,7 @@ app.post('/login', async (req, res) => {
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);
-            return res.status(401).json({
+            res.status(401).json({
                 redirect: 'login.html',
                 message: 'Palavra-passe incorreta'
             });
@@ -262,7 +262,8 @@ app.post('/login', async (req, res) => {
 function estaAutenticado(req, res, next) {
     if (req.session.username) {
         console.log("Utilizador autenticado");
-        res.redirect(baseurl);
+        next();
+        //res.redirect(baseurl);
     } else {
         console.log("Utilizador não autenticado");
         res.status(401).json({
