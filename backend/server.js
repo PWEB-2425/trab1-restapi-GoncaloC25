@@ -17,7 +17,9 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         sameSite: 'none', // allow cross-site
-        secure: true      // cookie only over HTTPS
+        secure: process.env.NODE_ENV === 'production', // only secure in production
+        httpOnly: true,   // prevent XSS attacks
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
 
@@ -227,6 +229,9 @@ const baseurl = 'https://trab1-pw-frontend-gray.vercel.app/'
 
 // Rota de login: autentica username e cria sessão
 app.post('/login', async (req, res) => {
+    console.log('Login attempt for:', req.body.username);
+    console.log('Session before login:', req.session);
+    
     const collection = db.collection('Admins');
     const username = req.body.username;
     const password = req.body.password;
@@ -235,6 +240,7 @@ app.post('/login', async (req, res) => {
     const userdb = await collection.findOne({ username: username });
 
     if (!userdb) {
+        console.log('User not found:', username);
         return res.status(401).json({
             redirect: 'login.html',
             message: "Utilizador não existente"
@@ -242,6 +248,13 @@ app.post('/login', async (req, res) => {
     }
 
     bcrypt.compare(password, userdb.password, async function (err, isMatch) {
+        if (err) {
+            console.error('Bcrypt error:', err);
+            return res.status(500).json({
+                message: 'Erro interno do servidor'
+            });
+        }
+        
         if (isMatch) {
             // username autenticado com sucesso
             console.log(`Utilizador ${username} autenticado com sucesso.`);
@@ -260,10 +273,13 @@ app.post('/login', async (req, res) => {
 
 // Middleware para proteger rotas: verifica se username está autenticado
 function estaAutenticado(req, res, next) {
+    console.log('Session data:', req.session);
+    console.log('Session ID:', req.sessionID);
+    console.log('Username in session:', req.session.username);
+    
     if (req.session.username) {
         console.log("Utilizador autenticado");
         next();
-        //res.redirect(baseurl);
     } else {
         console.log("Utilizador não autenticado");
         res.status(401).json({
@@ -286,6 +302,16 @@ app.get('/profile', estaAutenticado, (req, res) => {
     res.json({
         name: username
     })
+});
+
+// Test endpoint to check session
+app.get('/test-session', (req, res) => {
+    console.log('Session test:', req.session);
+    res.json({
+        sessionId: req.sessionID,
+        session: req.session,
+        hasUsername: !!req.session.username
+    });
 });
 
 // Variáveis globais para banco de dados
