@@ -26,6 +26,7 @@ async function getUser(){
 
     if (response.status === 401){
         const data = response.json();
+        console.log(data);
         window.location.href = data.redirect;
         document.getElementById("errorMessage").innerHTML = data.message;
     }
@@ -43,6 +44,7 @@ async function listarAlunos(){
     
     if (alunosresposta.status === 401){
         const data = alunosresposta.json();
+        console.log(data);
         window.location.href = data.redirect;
         document.getElementById("errorMessage").innerHTML = data.message;
     }

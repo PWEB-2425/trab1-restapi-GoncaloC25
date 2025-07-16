@@ -223,7 +223,7 @@ app.use('/find/:isWhat/:id', async (req, res) => {
 
 // Configura servidor para servir arquivos estáticos da pasta 'public'
 //app.use(express.static('../frontend'));
-const baseurl = 'https://trab1-pw-frontend-gray.vercel.app'
+const baseurl = 'https://trab1-pw-frontend-gray.vercel.app/'
 
 // Rota de login: autentica username e cria sessão
 app.post('/login', async (req, res) => {
@@ -235,7 +235,7 @@ app.post('/login', async (req, res) => {
     const userdb = await collection.findOne({ username: username });
 
     if (!userdb) {
-        return res.status(401).json({ success: false, message: 'Utilizador não encontrado', redirect: 'login.html' });
+        return res.status(401).redirect(baseurl + 'login.html');
     }
 
     bcrypt.compare(password, userdb.password, async function (err, isMatch) {
@@ -247,7 +247,7 @@ app.post('/login', async (req, res) => {
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);
-            return res.status(401).json({ success: false, message: 'Palavra-passe Incorreta:', redirect: 'login.html' });
+            return res.status(401).redirect(baseurl + 'login.html');
         }
     });
 });
@@ -256,10 +256,10 @@ app.post('/login', async (req, res) => {
 function estaAutenticado(req, res, next) {
     if (req.session.username) {
         console.log("Utilizador autenticado");
-        next();
+        res.redirect(baseurl);
     } else {
         console.log("Utilizador não autenticado");
-        res.status(401).json({ success: false, message: 'Utilizador não autenticado, por favor, faça login:', redirect: "login.html" });
+        res.status(401).redirect(baseurl + 'login.html');
     }
 }
 
@@ -267,7 +267,7 @@ function estaAutenticado(req, res, next) {
 app.get('/logout', (req, res) => {
     req.session.destroy();
     console.log("Sessão destruida")
-    res.redirect(baseurl + '/login.html');
+    res.redirect(baseurl + 'login.html');
 });
 
 app.get('/profile', estaAutenticado, (req, res) => {
