@@ -82,7 +82,7 @@ app.use('/criar/:isWhat', async (req, res) => {
 
 // Função para listar entradas na base de dados
 
-app.use('/listar/:isWhat', async (req, res) => {
+app.use('/listar/:isWhat', estaAutenticado, async (req, res) => {
     try{
         const isWhat = req.params.isWhat;
         var collection;
