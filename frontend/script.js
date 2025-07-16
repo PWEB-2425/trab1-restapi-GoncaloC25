@@ -39,7 +39,7 @@ async function getUser(){
 }
 
 async function listarAlunos(){
-    const alunosresposta = await fetch(baseurl + "listar/aluno");
+    const alunosresposta = await fetch(baseurl + "listar/aluno", {credentials: 'include'});
     const cursosresposta = await fetch(baseurl + "listar/curso");
     
     if (alunosresposta.status === 401){
