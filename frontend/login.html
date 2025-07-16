@@ -9,7 +9,7 @@
     <body>
         <div class = "divider login">
             <p id = "errorMessage">
-                É necessário iniciar sessão:
+                É necessário iniciar sessão
             </p>
             <div class="sub divider">
                 <form id="loginForm">
@@ -39,6 +39,12 @@
             password: formData.get('password')
         };
 
+        const message = localStorage.getItem("loginError");
+        if (message) {
+            document.getElementById("errorMessage").innerHTML = message;
+            localStorage.removeItem("loginError"); // Clear after showing
+        }
+
         try {
             const response = await fetch(baseurl + 'login', {
                 method: 'POST',
@@ -58,7 +64,7 @@
             const result = await response.json();
 
             if (response.status === 401) {
-                document.getElementById("errorMessage").innerHTML = result.message;
+                localStorage.setItem("loginError", result.message);
                 window.location.href = result.redirect;
             }
 

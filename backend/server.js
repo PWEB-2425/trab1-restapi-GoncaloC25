@@ -246,7 +246,7 @@ app.post('/login', async (req, res) => {
         console.log('User not found:', username);
         return res.status(401).json({
             redirect: 'login.html',
-            message: "Utilizador não existente"
+            message: "Utilizador inexistente"
         });
     }
 
@@ -284,7 +284,7 @@ function estaAutenticado(req, res, next) {
         console.log("Utilizador não autenticado");
         res.status(401).json({
             redirect: 'login.html',
-            message: "Utilizador não autenticado, por favor, faça Login"
+            message: "Utilizador não autenticado, por favor, inicie sessão"
         });
     }
 }
