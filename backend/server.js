@@ -8,27 +8,40 @@ const bcrypt = require('bcrypt');
 
 dotenv.config();
 
+const baseurl = 'http://127.0.0.1:5500'
+
 // Cria uma instância do Express
 const app = express();
 
+// Necessário para enviar cookies
 app.set('trust proxy', 1);
 
+// Enhanced CORS configuration
 app.use(cors({
-    origin: 'https://trab1-pw-frontend-gray.vercel.app/', // Frontend URL
-    credentials: true
+  origin: function (origin, callback) {    
+
+    // Check if the origin is your frontend domain or any subpath
+    if (origin === baseurl || origin.startsWith(`${baseurl}/`)) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
 }));
 
-app.use(session({ 
-    name: 'sid',
-    secret: process.env.SECRET, 
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        sameSite: 'none', // allow cross-site
-        secure: true,
-        httpOnly: true,   // prevent XSS attacks
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    }
+// Session configuration - make sure it's secure in production
+app.use(session({
+  name: 'sid',
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // set to true if using HTTPS
+    sameSite: 'strict',
+    httpOnly: true, // prevents client-side JS from reading the cookie
+    maxAge: 1 * 60 * 60 * 1000 // 1 hour
+  }
 }));
 
 // Permite receber dados de formulários via POST
@@ -82,7 +95,7 @@ app.use('/criar/:isWhat', async (req, res) => {
 
 // Função para listar entradas na base de dados
 
-app.use('/listar/:isWhat', estaAutenticado, async (req, res) => {
+app.use('/listar/:isWhat', async (req, res) => {
     try{
         const isWhat = req.params.isWhat;
         var collection;
@@ -226,16 +239,8 @@ app.use('/find/:isWhat/:id', async (req, res) => {
 });
 
 
-
-// Configura servidor para servir arquivos estáticos da pasta 'public'
-//app.use(express.static('../frontend'));
-const baseurl = 'https://trab1-pw-frontend-gray.vercel.app/'
-
 // Rota de login: autentica username e cria sessão
 app.post('/login', async (req, res) => {
-    console.log('Login attempt for:', req.body.username);
-    console.log('Session before login:', req.session);
-    
     const collection = db.collection('Admins');
     const username = req.body.username;
     const password = req.body.password;
@@ -243,50 +248,40 @@ app.post('/login', async (req, res) => {
     // Procura username na base de dados
     const userdb = await collection.findOne({ username: username });
 
-    if (!userdb) {
-        console.log('User not found:', username);
+    if(!userdb){
         return res.status(401).json({
-            redirect: 'login.html',
             message: "Utilizador inexistente"
-        });
+        })
     }
 
     bcrypt.compare(password, userdb.password, async function (err, isMatch) {
-        if (err) {
-            console.error('Bcrypt error:', err);
-            return res.status(500).json({
-                message: 'Erro interno do servidor'
-            });
-        }
-        
         if (isMatch) {
             // username autenticado com sucesso
             console.log(`Utilizador ${username} autenticado com sucesso.`);
             req.session.username = username;
+                
             return res.redirect(baseurl);
+
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);
-            res.status(401).json({
-                redirect: 'login.html',
+            return res.status(401).json({
                 message: 'Palavra-passe incorreta'
-            });
+            })
         }
     });
 });
 
 // Middleware para proteger rotas: verifica se username está autenticado
 function estaAutenticado(req, res, next) {
-    
     if (req.session.username) {
         console.log("Utilizador autenticado");
         next();
     } else {
         console.log("Utilizador não autenticado");
         res.status(401).json({
-            redirect: 'login.html',
-            message: "Utilizador não autenticado, por favor, inicie sessão"
-        });
+            message: 'Utilizador não autenticado. Por favor, inicie sessão'
+        })
     }
 }
 
@@ -294,7 +289,7 @@ function estaAutenticado(req, res, next) {
 app.get('/logout', (req, res) => {
     req.session.destroy();
     console.log("Sessão destruida")
-    res.redirect(baseurl + 'login.html');
+    res.redirect(baseurl + '/login.html');
 });
 
 app.get('/profile', estaAutenticado, (req, res) => {
@@ -303,16 +298,6 @@ app.get('/profile', estaAutenticado, (req, res) => {
     res.json({
         name: username
     })
-});
-
-// Test endpoint to check session
-app.get('/test-session', (req, res) => {
-    console.log('Session test:', req.session);
-    res.json({
-        sessionId: req.sessionID,
-        session: req.session,
-        hasUsername: !!req.session.username
-    });
 });
 
 // Variáveis globais para banco de dados

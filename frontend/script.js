@@ -4,7 +4,7 @@ const btncriar = document.getElementById("adicionar-btn");
 btnaluno.addEventListener("click", mostraAlunos);
 btncurso.addEventListener("click", mostraCursos);
 
-const baseurl = "https://trab1-pw.onrender.com/";
+const baseurl = "http://localhost:3000/";
 
 const table = document.getElementById("tabela");
 let alunos = 0;
@@ -22,12 +22,11 @@ getUser();
 listarAlunos();
 
 async function getUser(){
-    const response = await fetch(baseurl + 'profile', {credentials: 'include'});
+    const response = await fetch(baseurl + 'profile', {credentials: "include"});
 
     if (response.status === 401){
-        const data = await response.json();
-        console.log(data);
-        window.location.href = data.redirect;
+        window.location.href = 'login.html';
+        return;
     }
 
     if(response.ok){
@@ -38,16 +37,9 @@ async function getUser(){
 }
 
 async function listarAlunos(){
-    const alunosresposta = await fetch(baseurl + "listar/aluno", {credentials: 'include'});
+    const alunosresposta = await fetch(baseurl + "listar/aluno");
     const cursosresposta = await fetch(baseurl + "listar/curso");
     
-    if (alunosresposta.status === 401){
-        const data = await alunosresposta.json();
-        console.log(data);
-        window.location.href = data.redirect;
-    }
-
-
     if(alunosresposta.ok){
         const alunosJS = await alunosresposta.json();
         const cursosJS = await cursosresposta.json();
