@@ -4,7 +4,7 @@ const btncriar = document.getElementById("adicionar-btn");
 btnaluno.addEventListener("click", mostraAlunos);
 btncurso.addEventListener("click", mostraCursos);
 
-const baseurl = "http://localhost:3000/";
+const baseurl = "https://trab1-pw.onrender.com/";
 
 const table = document.getElementById("tabela");
 let alunos = 0;

@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 
 dotenv.config();
 
-const baseurl = 'http://127.0.0.1:5500'
+const baseurl = 'https://trab1-pw-frontend-gray.vercel.app'
 
 // Cria uma instância do Express
 const app = express();
