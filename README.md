@@ -1,32 +1,81 @@
-# Informações gerais do programa
-## O que consiste o programa
+# Gestão de alunos (Trabalho 1)
 
-Este é um programa CRUD (Create, Read, Update, Delete) de alunos. Ele permite gerir alunos inscritos em diversos cursos. Permite ainda a gestão dos cursos.
-Neste programa, pode ser utilizada a base de dados MongoDB, hospedada localmente, disponivel na banch "Backend", ou no serviço Web render, disponivel na branch "deploy". Existe ainda a possibilidade de utilizar o programa com uma simples base de dados json, utilizando o json-server, implementado também na branch "Backend".
-Esta aplicação também está disponivel como serviço Web, utilizando o Vercel. a mesma pode ser acedida utilizando o seguinte link: [https://trab1-pw-frontend-j3rs-kljbz50dx-goncalos-projects-8f9d73fa.vercel.app/](https://trab1-pw-frontend-j3rs-kljbz50dx-goncalos-projects-8f9d73fa.vercel.app/)
+Projeto desenvolvido por Gonçalo Duque Correia, n. 29435
 
-## Como utilizar
+## Descrição
 
-Primeiramente, é necessário escolher um modo de implementação da base de dados, e, conforme a base de dados pretendida, escolher a branch pretendida.
+Este é um programa CRUD (Create, Read, Update, Delete) de alunos. Ele permite gerir alunos inscritos em diversos cursos. Permite ainda a gestão dos cursos. Neste programa, pode ser utilizada a base de dados MongoDB, hospedada localmente, disponivel na banch "Backend", ou no serviço Web render, disponivel na branch "deploy". Existe ainda a possibilidade de utilizar o programa com uma simples base de dados json, utilizando o json-server, implementado também na branch "Backend".
 
-### Json-server
+Assim sendo, esta aplicação permite:
+- A gestão de alunos e de cursos guardados numa base de dados MongoDB
+- Permitir a edição, visualização, remoção e criação de novos alunos/cursos.
 
-Para utilizar o programa utilizando a base de dados Json-server, escolhemos a branch "Backend", mudamos para o dirétorio "mock-server", e executamos o comando `npm start`.
 
-### MongoDB Local
+## Execução Local
 
-Para utilizarmos o programa com a base de dados MongoDB, com um servidor local, escolhemos a branch "Backend", mudamos para o diretório "backend", e executamos o comando `node server.js` para arrancarmos o servidor. Após a indicação do terminal, o servidor estará disponivel no porto indicado no ficheiro `.env`, ou, caso exista erro a ler o ficheiro, no porto 5000.
+### Pré-requisitos
+- [Node.js](https://nodejs.org/) (v18 ou superior recomendado)
+- [MongoDB](https://www.mongodb.com/) (local ou Atlas)
+- npm (geralmente já vem com o Node.js)
 
-### MongoDB implementado no Render
 
-Para utilizarmos a aplicação com o deploy no render, apenas teremos de escolher o branch deploy e executar o servidor para o nosso frontend. O nosso servidor de dados estará disponivel no link [https://trab1-pw.onrender.com/alunos/](https://trab1-pw.onrender.com/alunos/) e também [https://trab1-pw.onrender.com/cursos](https://trab1-pw.onrender.com/cursos/). Também podemos utilizar este modelo de base de dados ao utilziarmos a aplicação disponibilizada no Vercel, a mesma utiliza este modelo. 
+### Instalação
+1. **Clone o repositório:**
+2. **Instale as dependências:**
+3. **Configure as variáveis de ambiente:**
+    1. Poderá obter a string de conexão do MongoDB na sua dashboard do Atlas
+4. **Certifique-se que o MongoDB está a correr.**
+    1. Configure a string de conexão para Atlas no `.env`
 
-## Problemas conhecidos
 
-Neste programa, são conhecidos os problemas:
-  - Impossivel adicionar alunos ou cursos quando utilizado outro modelo de base de dados sem ser o JSON-Server.
-  - Criada uma entrada vazia fora do array de alunos ou cursos quando é tentado adicionar um novo aluno ou curso.
+### Como executar o projeto
 
-# Informações do Aluno que realizou este trabalho
+diretamente invocando o node.js
 
-Gonçalo Duque Correia, nº 29435
+```sh 
+node server.js
+
+```
+
+Ou via npm
+
+```sh
+npm start
+
+```
+
+A aplicação ficará disponível em [http://localhost:3000](http://localhost:3000) (ou na porta definida no `.env`).
+
+
+### Estrutura de pastas
+``` 
+Trabalho2/
+│
+...
+│
+├── frontend/
+│   ├── fonts/
+│   ├── script.js
+│   ├── estilo.css
+│   └── index.html
+├── backend/
+│   ├── server.js
+│   ├── package.json
+│   ├── package-lock.json
+│   └── .env
+└── README.md
+```
+
+## Execução Remota
+Para utilizar este programa utilizando o seu deploy no [Render](https://render.com/) e no [Vercel](https://vercel.com/), pode ser utilizado o link [https://trab1-pw-frontend-gray.vercel.app/](https://trab1-pw-frontend-gray.vercel.app/), que nos vai levar diretamente para a instancia disponivel no Vercel.
+O Render é mantido ativo utilizando o website [UpTimeRobot](https://uptimerobot.com/), logo, deveria estar disponivel sempre que possivel.
+
+## Fluxo de utilização
+1. Escolha se pertende gerir cursos ou alunos
+2. Execute operações á sua escolha.
+
+## Notas para desenvolvimento
+- O código está comentado para facilitar a compreensão.
+- Para qualquer dúvida, consulte os comentários no código fonte.
+
+---
