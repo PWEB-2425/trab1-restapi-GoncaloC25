@@ -56,7 +56,7 @@
                body: JSON.stringify(data)
            });
 
-           if (response.redirected) {
+           if (response.ok) {
                // On success, server sends redirect (302) to frontend baseurl
                window.location.replace('index.html');
                return;
