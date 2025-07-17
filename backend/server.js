@@ -20,6 +20,10 @@ app.set('trust proxy', 1);
 app.use(cors({
   origin: function (origin, callback) {    
 
+    if (!origin) {
+      return callback(null, true);
+    }
+
     // Check if the origin is your frontend domain or any subpath
     if (origin === baseurl || origin.startsWith(`${baseurl}/`)) {
       return callback(null, true);
@@ -37,8 +41,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true, // set to true if using HTTPS
-    sameSite: 'none',
+    secure: false, // set to true if using HTTPS
+    sameSite: 'strict',
     httpOnly: true, // prevents client-side JS from reading the cookie
     maxAge: 1 * 60 * 60 * 1000 // 1 hour
   }
