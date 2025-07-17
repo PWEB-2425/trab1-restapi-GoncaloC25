@@ -1,0 +1,20 @@
+{
+    "cursos": [
+    {
+      "id": "1",
+      "nomeDoCurso": "Engenharia da Computação Gráfica e multimédia"
+    },
+    {
+      "id": "2",
+      "nomeDoCurso": "Engenharia de Redes e Sistemas de Computadores"
+    },
+    {
+      "id": "3",
+      "nomeDoCurso": "Engenharia Informática"
+    },
+    {
+      "nomeDoCurso": "Engenharia Mecatrónica",
+      "id": "b7c7"
+    }
+  ]
+}
