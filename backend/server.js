@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 
 dotenv.config();
 
-const baseurl = 'https://trab1-pw-frontend-gray.vercel.app'
+const baseurl = 'http://localhost:5500'
 
 // Cria uma instância do Express
 const app = express();
@@ -18,7 +18,10 @@ app.set('trust proxy', 1);
 
 // Enhanced CORS configuration
 app.use(cors({
-  origin: function (origin, callback) {    
+  origin: function (origin, callback) { 
+     if (!origin) {
+      return callback(null, true);
+    }   
 
     // Check if the origin is your frontend domain or any subpath
     if (origin === baseurl || origin.startsWith(`${baseurl}/`)) {
@@ -28,6 +31,7 @@ app.use(cors({
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true
+
 }));
 
 // Session configuration - make sure it's secure in production
@@ -38,7 +42,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     secure: false, // set to true if using HTTPS
-    sameSite: 'strict',
+    sameSite: 'lax',
     httpOnly: true, // prevents client-side JS from reading the cookie
     maxAge: 1 * 60 * 60 * 1000 // 1 hour
   }
@@ -289,7 +293,7 @@ function estaAutenticado(req, res, next) {
 app.get('/logout', (req, res) => {
     req.session.destroy();
     console.log("Sessão destruida")
-    res.redirect(baseurl + '/login.html');
+    res.redirect(baseurl + '/frontend/login.html');
 });
 
 app.get('/profile', estaAutenticado, (req, res) => {
