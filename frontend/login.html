@@ -26,13 +26,13 @@
 </html>
 
 <script>
-   /* window.addEventListener('DOMContentLoaded', () => {
+   window.addEventListener('DOMContentLoaded', () => {
         const message = localStorage.getItem("loginError");
         if (message) {
             document.getElementById("errorMessage").innerHTML = message;
             localStorage.removeItem("loginError"); // Clear after showing
         }
-    });*/
+    });
 
     const baseurl = 'https://trab1-pw.onrender.com/'; // Backend URL
 
@@ -49,7 +49,6 @@
 
            const response = await fetch(baseurl + 'login', {
                method: 'POST',
-               credentials: 'include',
                headers: {
                    'Content-Type': 'application/json'
                },
