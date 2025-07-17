@@ -13,13 +13,41 @@ const baseurl = 'http://127.0.0.1:5500'
 // Cria uma instância do Express
 const app = express();
 
-app.use(session({ secret: process.env.SECRET }));
+// Necessário para enviar cookies
+app.set('trust proxy', 1);
+
+// Enhanced CORS configuration
+app.use(cors({
+  origin: function (origin, callback) {    
+
+    // Check if the origin is your frontend domain or any subpath
+    if (origin === baseurl || origin.startsWith(`${baseurl}/`)) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
+
+// Session configuration - make sure it's secure in production
+app.use(session({
+  name: 'sid',
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // set to true if using HTTPS
+    sameSite: 'strict',
+    httpOnly: true, // prevents client-side JS from reading the cookie
+    maxAge: 1 * 60 * 60 * 1000 // 1 hour
+  }
+}));
 
 // Permite receber dados de formulários via POST
 app.use(express.urlencoded({ extended: true }));
 // Permite receber dados em JSON
 app.use(express.json());
-app.use(cors());
 
 // proteger a pagina estatica '/pesquisa.html'
 // tem que ser feito antes de configurar o servidor estatico
@@ -67,7 +95,7 @@ app.use('/criar/:isWhat', async (req, res) => {
 
 // Função para listar entradas na base de dados
 
-app.use('/listar/:isWhat', estaAutenticado, async (req, res) => {
+app.use('/listar/:isWhat', async (req, res) => {
     try{
         const isWhat = req.params.isWhat;
         var collection;
@@ -211,10 +239,6 @@ app.use('/find/:isWhat/:id', async (req, res) => {
 });
 
 
-
-// Configura servidor para servir arquivos estáticos da pasta 'public'
-app.use(express.static('../frontend'));
-
 // Rota de login: autentica username e cria sessão
 app.post('/login', async (req, res) => {
     const collection = db.collection('Admins');
@@ -224,16 +248,26 @@ app.post('/login', async (req, res) => {
     // Procura username na base de dados
     const userdb = await collection.findOne({ username: username });
 
+    if(!userdb){
+        return res.status(401).json({
+            message: "Utilizador inexistente"
+        })
+    }
+
     bcrypt.compare(password, userdb.password, async function (err, isMatch) {
         if (isMatch) {
             // username autenticado com sucesso
             console.log(`Utilizador ${username} autenticado com sucesso.`);
             req.session.username = username;
-            return res.redirect('/index.html');    
+                
+            return res.redirect(baseurl);
+
         } else {  
             // Falha na autenticação
             console.log(`Falha na autenticação para o usuário ${username}.`);
-            return res.redirect('/login.html');
+            return res.status(401).json({
+                message: 'Palavra-passe incorreta'
+            })
         }
     });
 });
@@ -245,7 +279,9 @@ function estaAutenticado(req, res, next) {
         next();
     } else {
         console.log("Utilizador não autenticado");
-        res.redirect(302, '/login.html');
+        res.status(401).json({
+            message: 'Utilizador não autenticado. Por favor, inicie sessão'
+        })
     }
 }
 
@@ -253,7 +289,7 @@ function estaAutenticado(req, res, next) {
 app.get('/logout', (req, res) => {
     req.session.destroy();
     console.log("Sessão destruida")
-    res.redirect('/login.html');
+    res.redirect(baseurl + '/login.html');
 });
 
 app.get('/profile', estaAutenticado, (req, res) => {
