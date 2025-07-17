@@ -7,20 +7,67 @@
     <title>Login</title>
 </head>
     <body>
-        <div class = "divider">
-            <p>
-                É necessário iniciar sessão:
+        <div class = "divider login">
+            <p id = "errorMessage">
+                É necessário iniciar sessão
             </p>
             <div class="sub divider">
-                <form action="/login" method="post">
+                <form id="loginForm">
                     <p class="small header">Username:</p>
                     <input name= "username" type="text" placeholder="Username" class = "text input login">
                     <p class = "small header">Password:</p>
                     <input name= "password" type="password" placeholder="Password" class = "text input login">
                     <p></p>
-                    <input type= "submit" class="btn">
+                    <input type= "submit" class="btn" value="Sign in">
                 </form>
             </div>
         </div>
     </body>
 </html>
+
+<script>
+   window.addEventListener('DOMContentLoaded', () => {
+        const message = localStorage.getItem("loginError");
+        if (message) {
+            document.getElementById("errorMessage").innerHTML = message;
+            localStorage.removeItem("loginError"); // Clear after showing
+        }
+    });
+
+    const baseurl = 'https://trab1-pw.onrender.com/'; // Backend URL
+
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const data = {
+            username: formData.get('username'),
+            password: formData.get('password')
+        };
+
+           const response = await fetch(baseurl + 'login', {
+               method: 'POST',
+               credentials: 'include',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify(data)
+           });
+
+           if (response.redirected) {
+               // On success, server sends redirect (302) to frontend baseurl
+               window.location.replace('index.html');
+               return;
+           }
+
+           const result = await response.json();
+
+           if (response.status === 401) {
+               localStorage.setItem("loginError", result.message);
+               document.getElementById("errorMessage").innerHTML = response.message
+               window.location.href = 'login.html';
+           }
+    });
+</script>
